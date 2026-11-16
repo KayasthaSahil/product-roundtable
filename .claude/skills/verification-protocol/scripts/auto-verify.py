@@ -26,7 +26,8 @@ def check_evidence(e):
         if not m.group(2): return True, False, ""
         a, b = int(m.group(2)), int(m.group(3) or m.group(2))
         if b > len(lines): return False, False, f"{fp} has {len(lines)} lines, cited {b}"
-        detail = [norm(x) for x in (e.get("detail") or "").splitlines() if len(norm(x)) >= 8]
+        # Reviewers abbreviate excerpts with "..." and span lines: check each fragment separately.
+        detail = [norm(x) for x in re.split(r"\.\.\.|…|\n", e.get("detail") or "") if len(norm(x)) >= 6]
         if not detail: return True, False, ""
         window = norm(" ".join(lines[max(0, a - 6):b + 5]))
         hit = sum(1 for d in detail if d.strip("…. ") in window)
