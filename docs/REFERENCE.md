@@ -52,7 +52,9 @@ From the repo root in Claude Code:
 | Command | What happens |
 |---|---|
 | `/review-committee start` | Initialise `.review/`, run **P0 Intake** (existing context, stack detection, Atlas, brief, scope) |
-| `/review-committee next` | Run the next phase (P1 → P6). **Default: one phase per session** (`/clear` between phases) |
+| `/review-committee next` | Run the next **stage** (Review, then Plan). **Default: one stage per session** (`/clear` between stages); resumes if interrupted |
+| `/review-committee debate` | Optional: debate disagreements before decisions (otherwise the Chair decides) |
+| `/review-committee benchmark` | Optional: competitor benchmark in Stage 1 |
 | `/review-committee status` | Where the review stands |
 | `/review-committee report` | Rebuild the report |
 | `/review-committee pause` / `resume` | Pause (guards off) / resume |
@@ -60,7 +62,7 @@ From the repo root in Claude Code:
 | `/review-committee approve-plan TASK-001` | Record your approval of a ticket **as a plan item** (not implementation authorisation). Only acts on your explicit approval of that ticket or a listed set |
 | `/review-committee rereview` | Optional **P7**: independently check changes made later by an external process (review only) |
 
-To run several phases unattended, say so explicitly, e.g. `/review-committee next — run P1 through P6 without stopping`. Each phase still passes its own gate and state transition, and you get one consolidated summary at the end.
+To run several stages unattended, say so explicitly, e.g. `/review-committee next — run all stages without stopping`. Each step still passes its own gate and state transition, and you get one consolidated summary at the end.
 
 During a review the Chair never asks you routine questions. The only interactions are the two commands above and the end-of-phase progress note.
 
