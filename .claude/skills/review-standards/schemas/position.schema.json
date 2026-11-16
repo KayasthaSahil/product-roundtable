@@ -1,0 +1,71 @@
+{
+  "type": "object",
+  "required": [
+    "dispute_id",
+    "role",
+    "round",
+    "headline",
+    "stance",
+    "argument",
+    "evidence"
+  ],
+  "properties": {
+    "dispute_id": {
+      "type": "string",
+      "pattern": "^DBT-\\d{3}$"
+    },
+    "role": {
+      "type": "string",
+      "pattern": "^(CHR|PMV|PMS|CMP|ARC|FE|BE|AI|MED|VIS|UX|XAI|DOC|QA|CPE|RED|VER|SCR)$"
+    },
+    "round": {
+      "enum": [
+        1,
+        2,
+        3,
+        "challenge"
+      ]
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stance": {
+      "type": "string",
+      "minLength": 1
+    },
+    "argument": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence": {
+      "type": "array"
+    },
+    "assumptions_challenged": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "acknowledges": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tradeoffs": {
+      "type": "string"
+    },
+    "revised": {
+      "type": "boolean"
+    },
+    "final_recommendation": {
+      "type": "string"
+    },
+    "reconsideration_requested": {
+      "type": "boolean"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "position"
+}

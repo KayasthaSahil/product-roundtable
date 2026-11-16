@@ -1,0 +1,102 @@
+{
+  "id": "TASK-001",
+  "title": "[Action + specific outcome]",
+  "status": "DRAFT",
+  "priority": "High",
+  "workstream": "WS-01",
+  "findings": [
+    "SUT-BE-001"
+  ],
+  "decisions": [
+    "DEC-001"
+  ],
+  "disputes": [],
+  "objective": "Describe the concrete outcome this ticket must deliver.",
+  "current_behavior": "Describe only behaviour supported by the review record. Clearly identify any detail that still needs repository inspection.",
+  "expected_behavior": "Describe the observable behaviour after the change.",
+  "rationale": "Explain why this change is needed and connect it to user or system impact.",
+  "scope": {
+    "in_scope": [
+      "Specific implementation change"
+    ],
+    "out_of_scope": [
+      "Related work deliberately excluded"
+    ]
+  },
+  "source_inspection": [
+    {
+      "item": "Existing behaviour / contract to inspect",
+      "status": "to_verify",
+      "evidence": []
+    }
+  ],
+  "implementation_locations": [
+    {
+      "path": "path/to/verify",
+      "symbol": "symbol_to_verify",
+      "status": "candidate_to_verify",
+      "notes": "Do not assume this path or symbol exists until inspected."
+    }
+  ],
+  "dependencies": [],
+  "owner_role": "BE",
+  "effort": "M",
+  "acceptance_criteria": [
+    "A specific, observable condition that proves the expected behaviour."
+  ],
+  "rollback": "Describe how to revert the code and any required data, configuration, or runtime changes safely.",
+  "owner_approval": {
+    "status": "pending",
+    "approved_by": "",
+    "approved_at": "",
+    "note": "Approval applies to inclusion in the plan only; it does not authorise implementation."
+  },
+  "readiness": {
+    "verdict": "Hold",
+    "conditions": [],
+    "satisfied_conditions": [],
+    "open_conditions": [],
+    "assessed_by": [],
+    "assessed_at": ""
+  },
+  "implementation_plan": [
+    "Future implementer: inspect the listed source locations and confirm the current behaviour and interfaces before changing code.",
+    "Make the smallest coherent change that delivers the expected behaviour.",
+    "Add or update the targeted tests described in verification_plan.",
+    "Review the eventual change for regressions and scope violations."
+  ],
+  "verification_plan": {
+    "test_scenarios": [
+      "Normal path",
+      "Relevant failure or boundary path"
+    ],
+    "required_checks": [
+      "The future implementation satisfies each acceptance criterion.",
+      "The future implementation runs the relevant targeted tests and reports their results.",
+      "The future change contains no unrelated scope."
+    ],
+    "test_commands": []
+  },
+  "handoff_requirements": [
+    "Future implementation process should provide a changed-file summary.",
+    "Future implementation process should provide exact test commands and results.",
+    "Future implementation process should report acceptance-criteria outcomes and deviations."
+  ],
+  "quality_review": {
+    "verdict": "NOT_REVIEWED",
+    "reviewed_by": "",
+    "reviewed_at": "",
+    "checks": {
+      "traceability": false,
+      "behavior_clarity": false,
+      "scope_decomposition": false,
+      "source_grounding": false,
+      "dependency_integrity": false,
+      "acceptance_criteria": false,
+      "verification_plan": false,
+      "rollback_and_handoff": false,
+      "status_and_gate_alignment": false
+    },
+    "issues": []
+  }
+}

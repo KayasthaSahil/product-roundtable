@@ -1,0 +1,16 @@
+{
+  "id": "ATLAS-DIS-001",
+  "role": "BE",
+  "phase": "P2",
+  "cycle": 1,
+  "record_or_edge_id": "MOD-0000000000",
+  "issue_type": "incorrect|missing|stale|misclassified|unsupported_relationship",
+  "description": "Describe the factual discrepancy without adding a quality judgement.",
+  "source_evidence": [
+    {"path": "src/example.py", "line_start": 10, "line_end": 18, "symbol": "Example", "observation": "What the source demonstrates."}
+  ],
+  "suggested_correction": "Proposed factual correction or removal.",
+  "confidence": "VERIFIED|INFERRED|PARTIAL|UNVERIFIED",
+  "snapshot": "git-head-or-tree-digest",
+  "status": "OPEN"
+}

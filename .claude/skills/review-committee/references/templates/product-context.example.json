@@ -1,0 +1,61 @@
+{
+  "product": {
+    "name": "Product name",
+    "one_liner": "One sentence explaining the product.",
+    "description": "Describe what the product does, for whom, and the problem it solves.",
+    "promise": "Documented product promise",
+    "platforms": [
+      "web"
+    ],
+    "evidence": [
+      "README.md",
+      "docs/product.md"
+    ]
+  },
+  "target_users": [
+    {
+      "profile": "Documented or observed user group",
+      "goal": "Goal supported by evidence",
+      "context": "Relevant usage context",
+      "pain_point": "Observed or documented pain point",
+      "basis": "documented-and-observed",
+      "evidence": [
+        "docs/personas.md",
+        "src/routes/example.ts"
+      ]
+    }
+  ],
+  "use_cases": [
+    {
+      "id": "UC-01",
+      "title": "Complete a core task",
+      "user": "User",
+      "trigger": "User starts a new project",
+      "steps": [
+        "Start project",
+        "Provide input",
+        "Review result"
+      ],
+      "outcome": "A project is created",
+      "basis": "observed",
+      "evidence": [
+        "src/routes/project.ts",
+        "screenshots/project-start.png"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "FEAT-01",
+      "name": "Project creation",
+      "status": "implemented",
+      "purpose": "Create a project for the user's task",
+      "current_behavior": "The user starts a project from the project screen and provides initial details.",
+      "entry_point": "/projects/new",
+      "evidence": [
+        "src/routes/project.ts",
+        "src/components/ProjectForm.tsx"
+      ]
+    }
+  ]
+}

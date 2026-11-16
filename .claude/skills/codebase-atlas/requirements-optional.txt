@@ -1,0 +1,7 @@
+# Optional: real syntax-tree parsing for JavaScript/TypeScript/TSX/Go. The Atlas works without these
+# (stdlib only); without them those languages fall back to the regex tier and `atlas.py coverage` says so.
+# Versions below are the ones the bundled tests were run against.
+tree-sitter==0.26.1
+tree-sitter-javascript==0.25.0
+tree-sitter-typescript==0.23.2
+tree-sitter-go==0.25.0

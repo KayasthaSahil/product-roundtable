@@ -1,0 +1,76 @@
+{
+  "type": "object",
+  "required": [
+    "workstreams"
+  ],
+  "properties": {
+    "workstreams": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "goal",
+          "owner_role",
+          "horizon",
+          "decisions"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^WS-\\d{2}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "goal": {
+            "type": "string",
+            "minLength": 1
+          },
+          "owner_role": {
+            "type": "string",
+            "pattern": "^(CHR|PMV|PMS|CMP|ARC|FE|BE|AI|MED|VIS|UX|XAI|DOC|QA|CPE|RED|VER|SCR)$"
+          },
+          "horizon": {
+            "enum": [
+              "Now",
+              "Next",
+              "Later"
+            ]
+          },
+          "sequence": {
+            "type": "integer"
+          },
+          "decisions": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "depends_on": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "effort": {
+            "enum": [
+              "S",
+              "M",
+              "L",
+              "XL"
+            ]
+          },
+          "outcome": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "roadmap"
+}

@@ -1,0 +1,170 @@
+#!/usr/bin/env python3
+"""Review state machine. Run from the repo root.
+
+  state.py init                 create .review/ structure, status=active, phase=P0, record base commit
+  state.py status               print current state
+  state.py start <phase>        mark phase in progress (P0..P7)
+  state.py advance [--force]    mark current phase complete and move to the next (P6 -> review complete); P5/P6 run ticket-check/trace-check first
+  state.py dispatch <ROLE> "<task>" [--result complete|partial|blocked] [--bundle-count N] [--retry-of ID] [--input-tokens N --output-tokens N] [--context-profile PROFILE]
+  state.py skip <ROLE> "<reason>"                                      log an intentional skip
+  state.py dispatch-metrics [--json]                                   summarise calls, skips, retries and reported tokens
+  state.py roles <ROLE,ROLE,...>   set the active roles (from review-scope)
+  state.py pause | resume       pause/resume (guards are off while paused or complete)
+  state.py rereview             open P7 to review externally implemented changes
+  state.py set <key> <value>    set a top-level key (e.g. dev_server_url)
+"""
+import json, os, subprocess, sys, datetime
+
+PHASES = ["P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7"]
+REQUIRED_ROLES = ["CHR", "PMV", "PMS", "CMP", "ARC", "FE", "BE", "AI", "MED", "VIS", "UX", "XAI", "DOC", "QA", "CPE", "RED", "VER", "SCR"]
+DIRS = ["brief", "findings", "verification", "debates", "decisions", "gate", "report", "implementation/adr",
+        "implementation/workstreams", "runs", "evidence/screenshots", "rereview", "codebase-atlas/discrepancies"]
+ROOT = os.getcwd()
+R = os.path.join(ROOT, ".review")
+P = os.path.join(R, "state.json")
+
+def now():
+    return datetime.datetime.now().isoformat(timespec="seconds")
+
+def git(*a):
+    try:
+        return subprocess.check_output(["git", *a], stderr=subprocess.DEVNULL, text=True).strip()
+    except Exception:
+        return "unknown"
+
+def load():
+    if not os.path.exists(P):
+        sys.exit("No review found. Run: state.py init")
+    return json.load(open(P, encoding="utf-8"))
+
+def save(s):
+    s["updated_at"] = now()
+    json.dump(s, open(P, "w", encoding="utf-8"), indent=2)
+
+cmd = sys.argv[1] if len(sys.argv) > 1 else "status"
+if cmd == "init":
+    if os.path.exists(P):
+        sys.exit("A review already exists (.review/state.json). Use status / resume / rereview.")
+    for d in DIRS:
+        os.makedirs(os.path.join(R, d), exist_ok=True)
+    s = {"status": "active", "cycle": 1, "phase": "P0", "base_commit": git("rev-parse", "HEAD"),
+         "started_at": now(), "active_roles": REQUIRED_ROLES.copy(), "dev_server_url": None,
+         "phases": {p: {"status": "pending"} for p in PHASES}, "dispatches": [], "dispatch_skips": []}
+    s["phases"]["P0"] = {"status": "in_progress", "started_at": now()}
+    save(s)
+    json.dump({"limit": 5, "runs": []}, open(os.path.join(R, "runs", "targeted-tests.json"), "w"), indent=2)
+    json.dump({"runs": []}, open(os.path.join(R, "runs", "run-log.json"), "w"), indent=2)
+    gi = os.path.join(R, ".gitignore")
+    open(gi, "w").write("runs/\nevidence/\n")
+    print("Review initialised. Phase P0 in progress. Guards are ACTIVE.")
+elif cmd == "status":
+    s = load()
+    print(f"Status: {s['status']} · Cycle {s['cycle']} · Phase {s['phase']} · Base commit {s['base_commit'][:10]}")
+    print("Phases: " + "  ".join(f"{p}:{s['phases'][p]['status']}" for p in PHASES))
+    print("Active roles: " + (", ".join(s["active_roles"]) or "(not set)"))
+    last = s["dispatches"][-8:]
+    if last:
+        print("Recent dispatches:")
+        for d in last:
+            print(f"  {d['at']} {d['phase']} {d['role']}: {d['task']} -> {d.get('result', '?')}")
+elif cmd == "start":
+    s = load(); ph = sys.argv[2]
+    s["phase"] = ph; s["phases"][ph] = {"status": "in_progress", "started_at": now()}; save(s); print(f"{ph} in progress")
+elif cmd == "advance":
+    s = load(); ph = s["phase"]
+    # Deterministic gates: P5 needs ticket-check; P6 needs ticket-check + trace-check. --force is logged.
+    gates = {"P5": ["ticket-check.py"], "P6": ["ticket-check.py", "trace-check.py"]}.get(ph, [])
+    if s.get("phases", {}).get(ph, {}).get("gate_forced") is None:
+        for g in gates:
+            r = subprocess.run([sys.executable, os.path.join(ROOT, ".claude", "skills", "implementation-pack", "scripts", g)], capture_output=True, text=True)
+            if r.returncode:
+                if "--force" in sys.argv:
+                    s["phases"][ph]["gate_forced"] = f"{g} failed; forced {now()}"
+                else:
+                    sys.exit(f"Cannot advance {ph}: {g} failed. {(r.stdout or r.stderr).strip()[:1500]} -- Fix the records, or use --force (logged) only with a recorded reason.")
+    s["phases"][ph]["status"] = "complete"; s["phases"][ph]["completed_at"] = now()
+    if ph == "P6":
+        s["status"] = "complete"; s["completed_at"] = now()
+        print("P6 complete. REVIEW COMPLETE. Guards are now OFF. Report and implementation pack are final.")
+    elif ph == "P7":
+        s["status"] = "complete"; print("P7 complete. Re-review finished. Guards OFF.")
+    else:
+        nxt = PHASES[PHASES.index(ph) + 1]
+        s["phase"] = nxt; s["phases"][nxt] = {"status": "ready"}
+        print(f"{ph} complete. Next: {nxt}")
+    save(s)
+elif cmd == "dispatch":
+    s = load(); role, task = sys.argv[2], sys.argv[3]
+    args = sys.argv[4:]
+    def opt(name, default=None):
+        return args[args.index(name) + 1] if name in args and args.index(name) + 1 < len(args) else default
+    record = {"id": f"DSP-{len(s.get('dispatches', [])) + 1:04d}", "at": now(), "phase": s["phase"],
+              "cycle": s.get("cycle", 1), "role": role, "task": task, "result": opt("--result", "dispatched"),
+              "bundle_count": int(opt("--bundle-count", "1")), "retry_of": opt("--retry-of"),
+              "context_profile": opt("--context-profile")}
+    for flag, key in (("--input-tokens", "input_tokens"), ("--output-tokens", "output_tokens")):
+        value = opt(flag)
+        if value is not None:
+            try: record[key] = int(value)
+            except ValueError: sys.exit(f"{flag} must be an integer reported by the platform")
+    if record["bundle_count"] < 1: sys.exit("--bundle-count must be at least 1")
+    s.setdefault("dispatches", []).append(record); save(s); print(record["id"])
+elif cmd == "skip":
+    s = load(); role, reason = sys.argv[2], sys.argv[3]
+    if not reason.strip(): sys.exit("Skip reason must not be empty")
+    low_reason = reason.lower()
+    if any(term in low_reason for term in ("atlas", "token saving", "save tokens", "reduce token", "resource saving", "cost saving", "reduce agent", "agent count")):
+        sys.exit("Invalid phase skip: SCIS or resource/token savings cannot be used to skip a specialist. Use the specialist-dispatch-matrix.md applicability trigger.")
+    s.setdefault("dispatch_skips", []).append({"at": now(), "phase": s["phase"], "cycle": s.get("cycle", 1), "role": role, "reason": reason})
+    save(s); print("skip logged")
+elif cmd == "dispatch-metrics":
+    s = load(); cycle = s.get("cycle", 1)
+    ds = [d for d in s.get("dispatches", []) if d.get("cycle", 1) == cycle]
+    skips = [d for d in s.get("dispatch_skips", []) if d.get("cycle", 1) == cycle]
+    known_in = [d["input_tokens"] for d in ds if isinstance(d.get("input_tokens"), int)]
+    known_out = [d["output_tokens"] for d in ds if isinstance(d.get("output_tokens"), int)]
+    phase = s.get("phase", "P0")
+    phase_ds = [d for d in ds if d.get("phase") == phase]
+    phase_skips = [d for d in skips if d.get("phase") == phase]
+    phase_in = [d["input_tokens"] for d in phase_ds if isinstance(d.get("input_tokens"), int)]
+    phase_out = [d["output_tokens"] for d in phase_ds if isinstance(d.get("output_tokens"), int)]
+    phase_summary = {"dispatch_count": len(phase_ds), "skip_count": len(phase_skips),
+                     "retry_count": sum(1 for d in phase_ds if d.get("retry_of")),
+                     "bundled_assignments": sum(d.get("bundle_count", 1) for d in phase_ds),
+                     "reported_input_tokens": sum(phase_in) if phase_in else None,
+                     "reported_output_tokens": sum(phase_out) if phase_out else None}
+    s.setdefault("phases", {}).setdefault(phase, {"status": "in_progress"})["dispatch_metrics"] = phase_summary
+    save(s)
+    summary = {"cycle": cycle, **phase_summary,
+               "token_usage_records": sum(1 for d in ds if "input_tokens" in d or "output_tokens" in d),
+               "by_phase": {ph: {"dispatches": sum(1 for d in ds if d.get("phase") == ph),
+                                  "skips": sum(1 for d in skips if d.get("phase") == ph)} for ph in PHASES}}
+    if "--json" in sys.argv:
+        print(json.dumps(summary, indent=2))
+    else:
+        print(f"Dispatch metrics · cycle {cycle}")
+        print(f"Calls: {summary['dispatch_count']} · bundled assignments: {summary['bundled_assignments']} · skips: {summary['skip_count']} · retries: {summary['retry_count']}")
+        print("Reported tokens: input=" + (str(summary["reported_input_tokens"]) if summary["reported_input_tokens"] is not None else "unknown") +
+              " · output=" + (str(summary["reported_output_tokens"]) if summary["reported_output_tokens"] is not None else "unknown"))
+        for ph, values in summary["by_phase"].items():
+            if values["dispatches"] or values["skips"]: print(f"  {ph}: {values['dispatches']} calls, {values['skips']} skips")
+elif cmd == "roles":
+    s = load(); requested = [r.strip() for r in sys.argv[2].split(",") if r.strip()]
+    missing = [r for r in REQUIRED_ROLES if r not in requested]
+    unknown = [r for r in requested if r not in REQUIRED_ROLES]
+    if missing or unknown:
+        sys.exit("Role inventory rejected. All 18 committee roles must remain active/callable. Missing: " + ",".join(missing) + "; unknown: " + ",".join(unknown))
+    s["active_roles"] = REQUIRED_ROLES.copy(); save(s); print("all 18 committee roles active/callable; phase dispatch remains governed by specialist-dispatch-matrix.md")
+elif cmd in ("pause", "resume"):
+    s = load()
+    if s["status"] == "complete" and cmd == "resume":
+        sys.exit("Review is complete. Use rereview for P7.")
+    s["status"] = "paused" if cmd == "pause" else "active"; save(s); print(f"Review {s['status']}. Guards {'OFF' if cmd == 'pause' else 'ON'}.")
+elif cmd == "rereview":
+    s = load(); s["cycle"] += 1; s["status"] = "active"; s["phase"] = "P7"
+    s["phases"]["P7"] = {"status": "in_progress", "started_at": now(), "head_commit": git("rev-parse", "HEAD")}
+    save(s); print(f"P7 re-review opened (cycle {s['cycle']}). Base commit {s['base_commit'][:10]} -> HEAD {s['phases']['P7']['head_commit'][:10]}")
+elif cmd == "set":
+    s = load(); s[sys.argv[2]] = sys.argv[3]; save(s); print("set")
+else:
+    print(__doc__)

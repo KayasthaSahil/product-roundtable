@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "product-context",
+  "type": "object",
+  "required": [
+    "product",
+    "target_users",
+    "use_cases",
+    "features"
+  ],
+  "properties": {
+    "product": {
+      "type": "object",
+      "required": [
+        "name",
+        "description"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "one_liner": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 20
+        },
+        "promise": {
+          "type": "string"
+        },
+        "platforms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "target_users": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "profile",
+          "goal",
+          "basis"
+        ],
+        "properties": {
+          "profile": {
+            "type": "string"
+          },
+          "goal": {
+            "type": "string"
+          },
+          "context": {
+            "type": "string"
+          },
+          "pain_point": {
+            "type": "string"
+          },
+          "basis": {
+            "enum": [
+              "documented",
+              "observed",
+              "documented-and-observed"
+            ]
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "use_cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "user",
+          "trigger",
+          "steps",
+          "outcome",
+          "basis"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^UC-\\d{2}$"
+          },
+          "title": {
+            "type": "string"
+          },
+          "user": {
+            "type": "string"
+          },
+          "trigger": {
+            "type": "string"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "outcome": {
+            "type": "string"
+          },
+          "basis": {
+            "enum": [
+              "documented",
+              "observed",
+              "documented-and-observed"
+            ]
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "status",
+          "purpose",
+          "current_behavior",
+          "evidence"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^FEAT-\\d{2}$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "implemented",
+              "partial",
+              "planned",
+              "unknown"
+            ]
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "current_behavior": {
+            "type": "string"
+          },
+          "entry_point": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

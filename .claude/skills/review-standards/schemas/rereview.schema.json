@@ -1,0 +1,55 @@
+{
+  "type": "object",
+  "required": [
+    "results"
+  ],
+  "properties": {
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "finding_id",
+          "outcome",
+          "evidence",
+          "reviewer"
+        ],
+        "properties": {
+          "finding_id": {
+            "type": "string"
+          },
+          "outcome": {
+            "enum": [
+              "resolved",
+              "partially-resolved",
+              "not-resolved",
+              "regressed"
+            ]
+          },
+          "evidence": {
+            "type": "array",
+            "minItems": 1
+          },
+          "reviewer": {
+            "type": "string",
+            "pattern": "^(CHR|PMV|PMS|CMP|ARC|FE|BE|AI|MED|VIS|UX|XAI|DOC|QA|CPE|RED|VER|SCR)$"
+          },
+          "verified_by": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "new_findings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rereview"
+}

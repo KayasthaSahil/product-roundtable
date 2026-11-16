@@ -1,0 +1,236 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "kind",
+    "title",
+    "role",
+    "phase",
+    "location",
+    "evidence",
+    "problem",
+    "confidence"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^SUT-(PMV|PMS|CMP|ARC|FE|BE|AI|MED|VIS|UX|XAI|DOC|QA|CPE|RED|VER)-\\d{3}$"
+    },
+    "kind": {
+      "enum": [
+        "finding",
+        "strength"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "role": {
+      "type": "string",
+      "pattern": "^(CHR|PMV|PMS|CMP|ARC|FE|BE|AI|MED|VIS|UX|XAI|DOC|QA|CPE|RED|VER|SCR)$"
+    },
+    "phase": {
+      "enum": [
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P5",
+        "P6",
+        "P7"
+      ]
+    },
+    "category": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "Bug / Defect",
+        "Architectural Problem",
+        "UX / Usability Problem",
+        "Visual Design Problem",
+        "Performance / Cost Problem",
+        "Security / Reliability Risk",
+        "Missing Capability",
+        "Redundancy / Complexity",
+        "Documentation Problem",
+        "Product Strategy Opportunity",
+        null
+      ]
+    },
+    "severity": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "Critical",
+        "High",
+        "Medium",
+        "Low",
+        "Opportunity",
+        null
+      ]
+    },
+    "area": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "type",
+          "ref"
+        ],
+        "properties": {
+          "type": {
+            "enum": [
+              "code",
+              "command",
+              "screenshot",
+              "recording",
+              "render",
+              "repro",
+              "source",
+              "document"
+            ]
+          },
+          "ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "detail": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "repro_steps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "problem": {
+      "type": "string",
+      "minLength": 1
+    },
+    "current_behavior": {
+      "type": "string",
+      "description": "Concrete description of what the user/system does today; keep distinct from the problem interpretation when useful."
+    },
+    "root_cause": {
+      "type": "string"
+    },
+    "impact": {
+      "type": "string"
+    },
+    "recommendation": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "what"
+      ],
+      "properties": {
+        "what": {
+          "type": "string",
+          "minLength": 1
+        },
+        "why": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_outcome": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verification": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "alternatives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "approach",
+          "tradeoffs"
+        ],
+        "properties": {
+          "approach": {
+            "type": "string",
+            "minLength": 1
+          },
+          "tradeoffs": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "confidence": {
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "effort": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        null
+      ]
+    },
+    "related": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "handoff_to": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "amendments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "date",
+          "by",
+          "change",
+          "reason"
+        ]
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "finding"
+}

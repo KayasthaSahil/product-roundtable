@@ -1,0 +1,61 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "question",
+    "findings",
+    "parties",
+    "phase"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^DBT-\\d{3}$"
+    },
+    "question": {
+      "type": "string",
+      "minLength": 1
+    },
+    "context": {
+      "type": "string"
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "parties": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "string",
+        "pattern": "^(CHR|PMV|PMS|CMP|ARC|FE|BE|AI|MED|VIS|UX|XAI|DOC|QA|CPE|RED|VER|SCR)$"
+      }
+    },
+    "phase": {
+      "enum": [
+        "P4",
+        "P5",
+        "P6"
+      ]
+    },
+    "status": {
+      "enum": [
+        "open",
+        "decided"
+      ]
+    },
+    "setup": {
+      "type": "string"
+    },
+    "turning_point": {
+      "type": "string"
+    },
+    "decision": {
+      "type": "string"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "dispute"
+}
