@@ -23,14 +23,14 @@ This is the authoritative dispatch policy for the Review Committee. Phase runboo
 | P0 | PMS | Mandatory | Review MVP boundary and complexity budget after the initial brief. |
 | P0 | Other specialists | Skip | Activate roles for later phases; do not dispatch them during intake without a specific intake question. |
 | P1 | PMV | Mandatory | First-time user/value discovery and evidence-based user profiles. |
-| P1 | CMP | Mandatory | Competitive benchmark and opportunity scan. |
+| P1 | CMP | Optional | Competitive benchmark and opportunity scan; dispatch only when the user requested it (`benchmark`). This is a user-selected add-on, not a token-motivated skip. |
 | P1 | VIS | Conditional | Product has a user-facing visual interface available to inspect. |
 | P1 | UX | Conditional | Product has meaningful user journeys or interaction flows. |
 | P1 | Other specialists | Skip | No P1 assignment unless a material discovery question is documented. |
 | P2 | PMV, PMS, ARC, FE, BE, AI, MED, VIS, UX, XAI, DOC, QA, CPE | On assignment | Dispatch each active primary reviewer whose assigned area exists in `review-scope.md`; include only the assigned area. Record a phase-level non-dispatch for absent/irrelevant areas; do not merge specialist roles. CMP is not a P2 reviewer; RED/VER/SCR participate only under their phase-specific rules. |
 | P3 | VER | Mandatory, two passes | Planning/integrity assignment pass, then consolidation pass. These are distinct responsibilities, not duplicate retries. |
 | P3 | Cross-verifiers | On assignment | Only roles assigned finding IDs by VER; never the finding author. Group all assigned IDs per role into one invocation. |
-| P4 | Dispute parties | On assignment | Only roles named in an open dispute. Bundle all their disputes once per round. |
+| P4 | Dispute parties | Optional step | The whole P4 step runs only when the user requested `debate`. Then: only roles named in an open dispute, bundled once per round. |
 | P4 | RED | Conditional | Dispatch for strategic/high-impact, security-sensitive, materially contested, or unresolved disputes. Do not dispatch for routine disagreements already resolved by evidence. |
 | P5 | PMV | Conditional | Accepted decisions materially change user requirements, user journeys, or success criteria. |
 | P5 | PMS | Conditional | Accepted decisions materially expand scope, add complexity, introduce configuration burden, or require MVP trade-offs. |

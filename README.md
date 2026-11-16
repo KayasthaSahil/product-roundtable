@@ -26,32 +26,34 @@ Needs Python 3.9+ and Node (for the optional browser). Your existing `.claude/se
 
 ## Use it
 
-Open Claude Code in that project, then:
+Open Claude Code in that project, then run these in order (one per session):
 
 ```
-/review-committee start     # learns your product (takes one session)
-/review-committee next      # runs the next phase, repeat until done
+/review-committee start     # Stage 1: learns your product
+/review-committee next      # Stage 2: reviews and verifies, then Stage 3: plan and tickets
 ```
 
-That's it. You'll get a short progress note after each phase. Want it hands-off? Say:
-`/review-committee next — run P1 through P6 without stopping`
+Three stages, that's all. You get a one-line update after each step and a short summary at the end of each stage. If you hit your usage limit, run `next` again later: it resumes where it stopped instead of starting over.
 
-> 💡 Each phase is token-heavy. Run one phase per session (`/clear` between phases) so you don't hit your usage limit mid-phase.
+> 💡 Run one stage per session (`/clear` between stages) to stay under your usage limit. Want it hands-off? Say `/review-committee next — run all stages without stopping`.
 
-Handy extras: `/review-committee status` · `report` · `ticket TASK-001` · `approve-plan TASK-001`
+## The 3 stages
 
-## What happens
-
-| Phase | In plain words |
+| Stage | What happens |
 |---|---|
-| P0 Intake | Reads your repo and docs, maps the code, writes the product brief |
-| P1 Discovery | Tries the product like a first-time user, checks competitors |
-| P2 Review | Each specialist reviews on their own, without seeing the others' notes |
-| P3 Verification | Every claim is checked against the real code. Nobody verifies their own |
-| P4 Debate | Disagreements are argued with evidence, then decided |
-| P5 Decision | Every verified finding gets accepted, rejected or deferred. Plan and tickets are drafted |
-| P6 Readiness | Go / Go-with-conditions / Hold for each piece of work. **Review complete** |
-| P7 Re-review *(optional)* | After you've made changes, checks they actually fixed the problems |
+| **1. Understand** | Reads your repo and docs, maps the code, tries the product like a first-time user |
+| **2. Review** | 13 specialists review independently, then every finding is checked against the real code (nobody verifies their own) |
+| **3. Plan** | Each finding is accepted, rejected or deferred; you get a roadmap, tickets and a Go / Hold verdict per piece of work. **Review complete** |
+
+### Optional add-ons (only when you want them)
+
+| Command | Adds | When it's worth it |
+|---|---|---|
+| `/review-committee debate` | A structured debate, with evidence, on disagreements between specialists, before decisions are made. Without it, the Chair decides and records the dissent | Strategic or high-impact disagreements (Stage 2 tells you how many there are) |
+| `/review-committee benchmark` | A competitor comparison | You care about positioning |
+| `/review-committee rereview` | After you've made changes, checks they really fixed the problems | After implementing the plan |
+
+Other commands: `status` · `report` · `ticket TASK-001` · `approve-plan TASK-001`
 
 ## Where to find results
 

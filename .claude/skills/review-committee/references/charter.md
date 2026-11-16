@@ -141,7 +141,7 @@ See `review-standards.md` §9: Accepted · Accepted with modifications · Reject
 
 ## 3. Review Phases
 
-The planning review is **complete** at the end of **P6**. At that point the Review Report and the Implementation Planning Pack are final and ready for the product owner. The committee does not implement the plan. **P7**, if invoked later, is a separate post-delivery review of externally implemented changes; it does not perform implementation work.
+The review runs as **three stages**: 1 Understand (P0-P1), 2 Review (P2-P3), 3 Plan (P4 optional debate, P5, P6). **P4 (debate)**, the P1 competitive benchmark and **P7 (re-review)** are optional, user-requested add-ons. The planning review is **complete** at the end of **P6**. At that point the Review Report and the Implementation Planning Pack are final and ready for the product owner. The committee does not implement the plan. **P7**, if invoked later, is a separate post-delivery review of externally implemented changes; it does not perform implementation work.
 
 ### P0 — Intake
 - **Goal:** Understand the product and set up the review.

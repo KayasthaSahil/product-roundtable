@@ -4,6 +4,7 @@
 
 ## Steps
 1. `index.py --undecided` → every verified / partially-verified finding without a decision.
+1b. **If P4 was skipped** (`state.json` -> `phases.P4.status == "skipped"`): find conflicting recommendations using P4 step 1's criteria and decide each directly with the chair-decision-rules (evidence over volume, root cause, simplicity, reversibility). Record every dissenting role in the decision's `dissent`, mark direction-level ones `strategic: true`, and create no dispute files.
 2. **Decide all of them** (chair-decision-rules). Merge duplicates (`Merged`). Group closely related findings under one decision. Write acceptance criteria for every Accepted item (from findings' verification fields, sharpened). Mark strategic ones.
 3. **Roadmap:** group Accepted / Accepted-with-modifications decisions into workstreams in `.review/decisions/roadmap.json` (schema `roadmap`): owner role, horizon (Now/Next/Later), sequence, dependencies, effort, outcome. Set each decision's `workstream`.
 4. **Dispatch planning references by relevance**, following `specialist-dispatch-matrix.md`. Do not dispatch every specialist by default. Bundle all relevant reference work for each role into one invocation:

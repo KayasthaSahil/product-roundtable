@@ -23,7 +23,9 @@ All scripts run **from the repo root**. Short names below: `state.py` = `.claude
 | Argument | Action |
 |---|---|
 | `start` | `state.py init`, then run P0 (`references/phase-P0.md`) |
-| `next` (default) | Read state; run the current ready/in-progress phase from its runbook |
+| `next` (default) | Read state; run the current **stage** (its steps in order, advancing after each) from the runbooks |
+| `debate` | Optional: `state.py debate`, then run `references/phase-P4.md` before the Plan stage |
+| `benchmark` | Optional: `state.py benchmark`; P1 then also dispatches CMP for the competitive benchmark |
 | `status` | `state.py status` + `index.py --counts`; summarise in ≤8 lines |
 | `report` | Run `build-report.py` to rebuild the report from current records |
 | `pause` / `resume` | `state.py pause` / `state.py resume` (guards are off while paused) |
@@ -37,7 +39,16 @@ For `approve-plan <TASK-ID>`, act only when the user explicitly approves that ex
 
 The Chair owns ticket generation as part of P5/P6. Do not create or dispatch a separate ticket-generator agent. Use the existing review evidence and specialist outputs; do not re-read the full review corpus when the indexed records are sufficient. This skill ends at review, planning, and ticket creation: never dispatch coding agents or implement tickets.
 
-**Default: one phase per session.** At the end of a phase, tell the user in ≤5 lines what happened and that `/review-committee next` continues (a progress note, not a question). An explicit user instruction to run multiple phases unattended overrides the default: run them sequentially, each completing its own validation, gate and `state.py advance` before the next begins, and give one consolidated progress summary at the end instead of stopping after each phase.
+**Three stages, one per session.** The review has three user-facing stages; `state.py` still tracks internal steps P0-P7 so records stay stable:
+
+| Stage | Steps | Notes |
+|---|---|---|
+| 1/3 Understand | P0 intake, P1 discovery | CMP benchmark only if `benchmark` was requested |
+| 2/3 Review | P2 independent review, P3 verification | At the end, count disagreements (P4 step 1 criteria) and tell the user: "N disagreements (M strategic). `/review-committee debate` debates them first; `next` lets the Chair decide." |
+| 3/3 Plan | P4 debate (skipped unless requested), P5 decisions + tickets, P6 readiness gate | Review complete after P6 |
+| Optional | P7 re-review | `rereview` |
+
+Within a stage run each step's runbook in order, completing its own validation, gate and `state.py advance` before the next step. After each step give a **one-line** progress note; at the stage end give the 5-line-max summary (`advance` prints when a stage completes). **Resumable:** when `next` finds a step in progress, skip roles whose output already validates (e.g. a valid `findings/<ROLE>.json`, a `verification/by-<ROLE>.json`) and dispatch only what is missing; never restart a step. An explicit user instruction to run several stages unattended overrides stopping at stage ends.
 
 ## Dispatching agents
 - Use the **Agent tool** (named **Task** in some Claude Code versions) with `subagent_type` = the agent name, e.g. `review-architect`.
@@ -89,7 +100,7 @@ You personally write: `brief/product-brief.md`, `brief/product-context.json` (P0
 - Autonomous: resolve ambiguity from the brief, log the assumption, continue. Never ask routine clarification questions during review. **Sole exception:** `approve-plan` may set a ticket's planning approval only after the user's explicit approval of that ticket or an unambiguous listed set; `ticket` is read-only and needs no approval. Neither authorises implementation.
 - Never touch production code; you write only inside `.review/` (hook-enforced).
 - Never run the full test suite. Respect the targeted-test budget and the run log.
-- Independence in P2; no self-verification in P3; every dispute decided in P4; every verified finding gets a disposition in P5.
+- Independence in P2; no self-verification in P3; every dispute decided (in P4 if debate ran, otherwise by the Chair in P5 with dissent recorded); every verified finding gets a disposition in P5.
 - Never dismiss a valid finding because it conflicts with the current implementation.
 - Subjective or creative quality of generated content (text, images, audio, video, etc.) is out of scope; the owner judges it. The committee reviews the system that produces it and its technical correctness.
 - Planning tickets for future implementation are generated only from Accepted / Accepted-with-modifications decisions. Never create tickets for rejected, deferred, unverified, or merely interesting observations.

@@ -66,6 +66,8 @@ During a review the Chair never asks you routine questions. The only interaction
 
 ## Phases
 
+User-facing, the review is **3 stages**: **1 Understand** (P0-P1), **2 Review** (P2-P3), **3 Plan** (P4, P5, P6). `state.py` still tracks the internal steps below. **P4 Debate** only runs after `/review-committee debate`; otherwise the Chair decides disagreements in P5 and records dissent. The P1 competitive benchmark runs only after `/review-committee benchmark`. P7 is optional.
+
 | Phase | Purpose | Gate |
 |---|---|---|
 | **P0 Intake** | Existing context, stack, repo map, Atlas, product brief, scope, complexity budget | Brief, scope and validated `product-context.json` exist |

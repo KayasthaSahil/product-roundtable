@@ -1,4 +1,6 @@
-# P4 — Debate
+# P4 — Debate (optional)
+
+**Runs only after the user requests it** (`/review-committee debate` runs `state.py debate`). By default `state.py advance` skips P4 and the Chair decides disagreements directly in P5.
 
 **Goal:** resolve conflicts between findings and recommendations with structured debate.
 

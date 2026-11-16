@@ -4,7 +4,10 @@
   state.py init                 create .review/ structure, status=active, phase=P0, record base commit
   state.py status               print current state
   state.py start <phase>        mark phase in progress (P0..P7)
-  state.py advance [--force]    mark current phase complete and move to the next (P6 -> review complete); P5/P6 run ticket-check/trace-check first
+  state.py advance [--force]    mark current step complete and move to the next (P6 -> review complete); P5/P6 run ticket-check/trace-check first.
+                                P4 (debate) is skipped unless `debate` was requested.
+  state.py debate               opt in to the P4 debate step (allowed after P3 and before P5 completes)
+  state.py benchmark            opt in to the P1 competitive benchmark (CMP)
   state.py dispatch <ROLE> "<task>" [--result complete|partial|blocked] [--bundle-count N] [--retry-of ID] [--input-tokens N --output-tokens N] [--context-profile PROFILE]
   state.py skip <ROLE> "<reason>"                                      log an intentional skip
   state.py dispatch-metrics [--json]                                   summarise calls, skips, retries and reported tokens
@@ -16,6 +19,11 @@
 import json, os, subprocess, sys, datetime
 
 PHASES = ["P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7"]
+# User-facing stages group the internal steps. P4 (debate) and P7 (re-review) are optional.
+STAGES = [("1/3 Understand", ["P0", "P1"]), ("2/3 Review", ["P2", "P3"]), ("3/3 Plan", ["P4", "P5", "P6"])]
+STAGE_END = {"P1": "Stage 1/3 (Understand)", "P3": "Stage 2/3 (Review)", "P6": "Stage 3/3 (Plan)"}
+def stage_of(ph):
+    return next((n for n, steps in STAGES if ph in steps), "Optional re-review")
 REQUIRED_ROLES = ["CHR", "PMV", "PMS", "CMP", "ARC", "FE", "BE", "AI", "MED", "VIS", "UX", "XAI", "DOC", "QA", "CPE", "RED", "VER", "SCR"]
 DIRS = ["brief", "findings", "verification", "debates", "decisions", "gate", "report", "implementation/adr",
         "implementation/workstreams", "runs", "evidence/screenshots", "rereview", "codebase-atlas/discrepancies"]
@@ -48,7 +56,7 @@ if cmd == "init":
     for d in DIRS:
         os.makedirs(os.path.join(R, d), exist_ok=True)
     s = {"status": "active", "cycle": 1, "phase": "P0", "base_commit": git("rev-parse", "HEAD"),
-         "started_at": now(), "active_roles": REQUIRED_ROLES.copy(), "dev_server_url": None,
+         "started_at": now(), "active_roles": REQUIRED_ROLES.copy(), "dev_server_url": None, "debate": False, "benchmark": False,
          "phases": {p: {"status": "pending"} for p in PHASES}, "dispatches": [], "dispatch_skips": []}
     s["phases"]["P0"] = {"status": "in_progress", "started_at": now()}
     save(s)
@@ -59,7 +67,8 @@ if cmd == "init":
     print("Review initialised. Phase P0 in progress. Guards are ACTIVE.")
 elif cmd == "status":
     s = load()
-    print(f"Status: {s['status']} · Cycle {s['cycle']} · Phase {s['phase']} · Base commit {s['base_commit'][:10]}")
+    print(f"Status: {s['status']} · Cycle {s['cycle']} · Stage {stage_of(s['phase'])} · Step {s['phase']} · Base commit {s['base_commit'][:10]}")
+    print(f"Options: debate={'on' if s.get('debate') else 'off'} · competitive benchmark={'on' if s.get('benchmark') else 'off'}")
     print("Phases: " + "  ".join(f"{p}:{s['phases'][p]['status']}" for p in PHASES))
     print("Active roles: " + (", ".join(s["active_roles"]) or "(not set)"))
     last = s["dispatches"][-8:]
@@ -90,8 +99,13 @@ elif cmd == "advance":
         s["status"] = "complete"; print("P7 complete. Re-review finished. Guards OFF.")
     else:
         nxt = PHASES[PHASES.index(ph) + 1]
+        if nxt == "P4" and not s.get("debate"):
+            s["phases"]["P4"] = {"status": "skipped", "reason": "debate not requested; Chair decides disagreements in P5"}
+            nxt = "P5"
         s["phase"] = nxt; s["phases"][nxt] = {"status": "ready"}
-        print(f"{ph} complete. Next: {nxt}")
+        print(f"{ph} complete. Next step: {nxt}")
+        if ph in STAGE_END:
+            print(f"{STAGE_END[ph]} COMPLETE. Tell the user and stop; `next` starts the following stage.")
     save(s)
 elif cmd == "dispatch":
     s = load(); role, task = sys.argv[2], sys.argv[3]
@@ -155,6 +169,15 @@ elif cmd == "roles":
     if missing or unknown:
         sys.exit("Role inventory rejected. All 18 committee roles must remain active/callable. Missing: " + ",".join(missing) + "; unknown: " + ",".join(unknown))
     s["active_roles"] = REQUIRED_ROLES.copy(); save(s); print("all 18 committee roles active/callable; phase dispatch remains governed by specialist-dispatch-matrix.md")
+elif cmd == "debate":
+    s = load()
+    if s["phases"]["P3"].get("status") != "complete" or s["phases"]["P5"].get("status") == "complete":
+        sys.exit("Debate can be requested after P3 (Review stage) is complete and before P5 completes.")
+    s["debate"] = True; s["phase"] = "P4"; s["phases"]["P4"] = {"status": "in_progress", "started_at": now()}
+    if s["phases"]["P5"].get("status") in ("ready", "in_progress"): s["phases"]["P5"] = {"status": "pending"}
+    save(s); print("Debate enabled. P4 in progress; run it, then `advance` continues to P5.")
+elif cmd == "benchmark":
+    s = load(); s["benchmark"] = True; save(s); print("Competitive benchmark enabled for P1 (CMP).")
 elif cmd in ("pause", "resume"):
     s = load()
     if s["status"] == "complete" and cmd == "resume":
