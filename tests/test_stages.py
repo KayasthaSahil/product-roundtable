@@ -64,3 +64,27 @@ class DepthAndCleanupTests(StageTests):
         self.assertFalse((self.root / '.review/runs/env').exists())
         self.assertFalse((shots / 'page-1.yml').exists())
         self.assertTrue((self.root / '.review/evidence/keep.png').exists())
+
+
+class CapsAndTokensTests(StageTests):
+    VALIDATE = Path(__file__).resolve().parents[1] / '.claude' / 'skills' / 'review-standards' / 'scripts' / 'validate.py'
+
+    def _finding(self, i, sev):
+        return {"id": f"FND-BE-{i:03d}", "kind": "finding", "title": "t", "role": "BE", "phase": "P2", "category": "Bug / Defect",
+                "severity": sev, "location": "x", "evidence": [{"type": "source", "ref": "doc"}], "problem": "p", "impact": "i",
+                "recommendation": {"what": "w", "verification": "v"}, "confidence": "high"}
+
+    def test_lite_depth_caps_findings_and_low_items(self):
+        (self.root / '.review/brief').mkdir(parents=True, exist_ok=True)
+        (self.root / '.review/brief/stack-profile.json').write_text(json.dumps({"size": {"files": 5}}))
+        self.run_state('depth')
+        doc = {"role": "BE", "cycle": 1, "findings": [self._finding(i, "Low") for i in range(1, 5)]}
+        p = self.root / 'f.json'; p.write_text(json.dumps(doc))
+        r = subprocess.run([sys.executable, str(self.VALIDATE), 'findings', str(p)], cwd=self.root, text=True, capture_output=True)
+        self.assertNotEqual(r.returncode, 0); self.assertIn('Low/Opportunity findings exceeds', r.stdout)
+
+    def test_total_tokens_are_recorded_and_summed(self):
+        self.run_state('dispatch', 'ARC', 'x', '--result', 'complete', '--total-tokens', '1200')
+        self.run_state('dispatch', 'QA', 'y', '--result', 'complete', '--total-tokens', '800')
+        out = self.run_state('dispatch-metrics').stdout
+        self.assertIn('this step=2000', out)

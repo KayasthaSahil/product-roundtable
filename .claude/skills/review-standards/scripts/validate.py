@@ -105,6 +105,22 @@ def all_finding_ids(root):
     return ids
 
 
+def finding_caps(doc, errs):
+    """P1/P2 volume caps per file: lite depth <= 8 findings and <= 3 Low/Opportunity; full <= 15 and <= 5."""
+    try:
+        depth = json.load(open(os.path.join(repo_root(), ".review", "state.json"), encoding="utf-8")).get("depth", "full")
+    except Exception:
+        depth = "full"
+    cap, low_cap = (8, 3) if depth == "lite" else (15, 5)
+    for phase in ("P1", "P2"):
+        fs = [f for f in doc.get("findings", []) if f.get("kind") == "finding" and f.get("phase") == phase]
+        low = [f for f in fs if f.get("severity") in ("Low", "Opportunity")]
+        if len(fs) > cap:
+            errs.append(f"{phase}: {len(fs)} findings exceeds the {depth}-depth cap of {cap}; keep the highest-impact ones and group the rest")
+        if len(low) > low_cap:
+            errs.append(f"{phase}: {len(low)} Low/Opportunity findings exceeds the cap of {low_cap}; group minor items into one finding per area")
+
+
 def semantic_findings(doc, errs, check_refs):
     seen = set()
     strengths = {}
@@ -175,6 +191,7 @@ def main():
     check(doc, load_schema(KINDS[kind]), kind, errs)
     if kind == "findings":
         semantic_findings(doc, errs, check_refs)
+        finding_caps(doc, errs)
     if check_refs and kind in ("verification", "decisions", "rereview", "dispute"):
         ids = all_finding_ids(repo_root())
         key = {"verification": "verdicts", "decisions": "decisions", "rereview": "results"}.get(kind)

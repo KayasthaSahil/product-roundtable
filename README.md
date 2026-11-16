@@ -54,7 +54,7 @@ Three commands, three stages, that's all. You get a one-line update after each s
 | `/review-committee benchmark` | A competitor comparison | You care about positioning |
 | `/review-committee rereview` | After you've made changes, checks they really fixed the problems | After implementing the plan |
 
-Other commands: `status` · `report` · `ticket TASK-001` · `approve-plan TASK-001`
+Other commands: `status` · `report` · `ticket TASK-001` · `approve-plan TASK-001`, `approve-plan WS-02` or `approve-plan all-awaiting` (approves only tickets that are ready; it never implements anything)
 
 ## Where to find results
 

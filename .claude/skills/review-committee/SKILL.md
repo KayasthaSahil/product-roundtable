@@ -32,9 +32,9 @@ All scripts run **from the repo root**. Short names below: `state.py` = `.claude
 | `pause` / `resume` | `state.py pause` / `state.py resume` (guards are off while paused) |
 | `rereview` | `state.py rereview`, then run `references/phase-P7.md` |
 | `ticket <TASK-ID>` | Inspect a ticket, its dependencies, plan approval state and readiness |
-| `approve-plan <TASK-ID>` | Record owner approval of the ticket as a planning item; does not authorise implementation |
+| `approve-plan <TASK-ID...>` / `<WS-NN>` / `all-awaiting` | Record owner approval as planning items; does not authorise implementation. Runs `implementation-pack/scripts/approve-plan.py --by "<owner>"`, which approves only eligible tickets (AWAITING_OWNER_APPROVAL, Go readiness, no open conditions), skips and reports blocked ones, re-runs ticket-check and rolls back on failure |
 
-For `approve-plan <TASK-ID>`, act only when the user explicitly approves that exact ticket (or an unambiguous listed set) as part of the proposed plan. Record approver and date, check P6 readiness and blockers, and set planning status to `APPROVED` only when all planning conditions pass. This approval does not authorise code changes or implementation. Never infer approval from general agreement with the review.
+For `approve-plan`, act only when the user explicitly typed the command naming tickets, a workstream, or `all-awaiting` (that command itself is the explicit approval; never infer it from general agreement). Use the user's name for `--by`, or `owner` if unknown. Record approver and date, check P6 readiness and blockers, and set planning status to `APPROVED` only when all planning conditions pass. This approval does not authorise code changes or implementation. Never infer approval from general agreement with the review.
 
 `ticket <TASK-ID>` is read-only: summarise scope, links, dependencies, blockers, plan approval and current planning status.
 
@@ -58,7 +58,7 @@ The Chair owns ticket generation as part of P5/P6. Do not create or dispatch a s
 - All 17 specialist agents remain installed, callable and active for the review cycle. The existing dispatch matrix may still determine that a role has no substantive assignment in a particular phase; that is a phase-specific non-dispatch, not role removal. Record every intentional non-dispatch and its reason. Never skip, deactivate, merge or reduce a role because the Atlas is incomplete, because SCIS exists, or to save tokens/resources.
 - Bundle compatible work for the same role into **one invocation per phase**. Exceptions: P3 Verifier's distinct planning/consolidation passes and P4's separate debate rounds. P4 sends one invocation per role per round with all that role's disputes.
 - Launch independent work in parallel, in batches of up to 6. Preserve runbook ordering where later work reuses measurements or depends on earlier outputs.
-- After each return, log the dispatch with `state.py dispatch <ROLE> "<task>" --result <status> --bundle-count <n> [--retry-of <dispatch-id>] [--input-tokens <n> --output-tokens <n>]`. Supply token counts only when actually exposed by the platform; never estimate.
+- After each return, log the dispatch with `state.py dispatch <ROLE> "<task>" --result <status> --bundle-count <n> [--retry-of <dispatch-id>] [--input-tokens <n> --output-tokens <n>]`. Pass `--total-tokens <n>` copied from the token count the Agent result reports for that agent (the platform shows it); never estimate, and omit it if no count is shown. Include the step total from `dispatch-metrics` in the stage-end summary.
 - Record deliberate non-dispatches with `state.py skip <ROLE> "<reason>"`.
 - Agents return ≤10-line summaries. **Do not read their full files unless a decision needs it.** Use `index.py` for overviews and `index.py --show <ID>` for detail.
 - Validate outputs deterministically (`validate.py <kind> <file> --check-refs`). If invalid, re-dispatch once with the error list; log it as a retry. If still invalid, record a note and continue.

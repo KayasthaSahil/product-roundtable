@@ -11,6 +11,17 @@ This pack explains the product changes accepted by the Review Committee and reco
 4. Open only the `REFERENCES/` or `PLAN/workstreams/` documents linked by that ticket.
 5. For build/run/test commands read `.review/brief/stack-profile.md`; for product background read `.review/brief/product-brief.md`.
 
+## Hand a ticket to a coding agent
+Open a fresh coding session in this repository and give it:
+
+```
+Implement TASK-NNN using .review/implementation/tickets/TASK-NNN.json.
+Follow its implementation_plan, stay inside its scope, run the verification_plan test commands,
+and report the acceptance-criteria outcomes and any deviations. Do not change unrelated code.
+```
+
+Only tickets with status `APPROVED` should be implemented. To approve many at once: `/review-committee approve-plan WS-NN` or `all-awaiting`.
+
 ## Source of truth
 - Decisions: `.review/decisions/decision-log.json`; `DECISIONS/decision-log.md` is its generated human-readable view.
 - Workstreams and milestones: `.review/decisions/roadmap.json` plus the P6 readiness gate; `PLAN/roadmap.md` is the generated view.

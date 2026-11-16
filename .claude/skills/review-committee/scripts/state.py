@@ -9,7 +9,7 @@
   state.py debate               opt in to the P4 debate step (allowed after P3 and before P5 completes)
   state.py benchmark            opt in to the P1 competitive benchmark (CMP)
   state.py depth [lite|full]    review depth for P2: no argument = decide from stack-profile.json (lite when <= 50 files)
-  state.py dispatch <ROLE> "<task>" [--result complete|partial|blocked] [--bundle-count N] [--retry-of ID] [--input-tokens N --output-tokens N] [--context-profile PROFILE]
+  state.py dispatch <ROLE> "<task>" [--result complete|partial|blocked] [--bundle-count N] [--retry-of ID] [--input-tokens N --output-tokens N] [--total-tokens N] [--context-profile PROFILE]
   state.py skip <ROLE> "<reason>"                                      log an intentional skip
   state.py dispatch-metrics [--json]                                   summarise calls, skips, retries and reported tokens
   state.py roles <ROLE,ROLE,...>   set the active roles (from review-scope)
@@ -125,7 +125,7 @@ elif cmd == "dispatch":
               "cycle": s.get("cycle", 1), "role": role, "task": task, "result": opt("--result", "dispatched"),
               "bundle_count": int(opt("--bundle-count", "1")), "retry_of": opt("--retry-of"),
               "context_profile": opt("--context-profile")}
-    for flag, key in (("--input-tokens", "input_tokens"), ("--output-tokens", "output_tokens")):
+    for flag, key in (("--input-tokens", "input_tokens"), ("--output-tokens", "output_tokens"), ("--total-tokens", "total_tokens")):
         value = opt(flag)
         if value is not None:
             try: record[key] = int(value)
@@ -151,14 +151,17 @@ elif cmd == "dispatch-metrics":
     phase_skips = [d for d in skips if d.get("phase") == phase]
     phase_in = [d["input_tokens"] for d in phase_ds if isinstance(d.get("input_tokens"), int)]
     phase_out = [d["output_tokens"] for d in phase_ds if isinstance(d.get("output_tokens"), int)]
+    phase_total = [d["total_tokens"] for d in phase_ds if isinstance(d.get("total_tokens"), int)]
+    all_total = [d["total_tokens"] for d in ds if isinstance(d.get("total_tokens"), int)]
     phase_summary = {"dispatch_count": len(phase_ds), "skip_count": len(phase_skips),
                      "retry_count": sum(1 for d in phase_ds if d.get("retry_of")),
                      "bundled_assignments": sum(d.get("bundle_count", 1) for d in phase_ds),
                      "reported_input_tokens": sum(phase_in) if phase_in else None,
-                     "reported_output_tokens": sum(phase_out) if phase_out else None}
+                     "reported_output_tokens": sum(phase_out) if phase_out else None,
+                     "reported_total_tokens": sum(phase_total) if phase_total else None}
     s.setdefault("phases", {}).setdefault(phase, {"status": "in_progress"})["dispatch_metrics"] = phase_summary
     save(s)
-    summary = {"cycle": cycle, **phase_summary,
+    summary = {"cycle": cycle, **phase_summary, "cycle_total_tokens": sum(all_total) if all_total else None,
                "token_usage_records": sum(1 for d in ds if "input_tokens" in d or "output_tokens" in d),
                "by_phase": {ph: {"dispatches": sum(1 for d in ds if d.get("phase") == ph),
                                   "skips": sum(1 for d in skips if d.get("phase") == ph)} for ph in PHASES}}
@@ -169,6 +172,8 @@ elif cmd == "dispatch-metrics":
         print(f"Calls: {summary['dispatch_count']} · bundled assignments: {summary['bundled_assignments']} · skips: {summary['skip_count']} · retries: {summary['retry_count']}")
         print("Reported tokens: input=" + (str(summary["reported_input_tokens"]) if summary["reported_input_tokens"] is not None else "unknown") +
               " · output=" + (str(summary["reported_output_tokens"]) if summary["reported_output_tokens"] is not None else "unknown"))
+        print("Total reported tokens: this step=" + (str(phase_summary["reported_total_tokens"]) if phase_summary["reported_total_tokens"] is not None else "unknown") +
+              " · whole review so far=" + (str(summary["cycle_total_tokens"]) if summary["cycle_total_tokens"] is not None else "unknown"))
         for ph, values in summary["by_phase"].items():
             if values["dispatches"] or values["skips"]: print(f"  {ph}: {values['dispatches']} calls, {values['skips']} skips")
 elif cmd == "roles":

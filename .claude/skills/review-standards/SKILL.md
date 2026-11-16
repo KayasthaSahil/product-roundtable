@@ -26,7 +26,7 @@ Transform the product into a distinctive, polished, reliable, maintainable, prod
 - **Cite only what exists**, exactly. A fabricated or approximate reference invalidates the finding.
 - Report **root causes**; list symptoms inside one finding.
 - Record **strengths** (`kind: "strength"`) — a review without strengths is incomplete. Max 3 per role per phase, one line each, with a reference.
-- No minimum count. Group minor Low polish into one finding per area.
+- **Volume caps (validator-enforced, per file per phase P1/P2):** depth `lite` ≤ 8 findings and ≤ 3 Low/Opportunity; depth `full` ≤ 15 and ≤ 5. Keep the highest-impact findings; group the rest by area. Quality over quantity: one root cause, one finding.
 - Stay in your area; outside it, note briefly with `handoff_to`.
 
 ### Severity (actual impact, not feeling; severity ≠ priority)
