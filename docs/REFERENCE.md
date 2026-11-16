@@ -62,9 +62,9 @@ From the repo root in Claude Code:
 | `/review-committee approve-plan TASK-001` | Record your approval of a ticket **as a plan item** (not implementation authorisation). Only acts on your explicit approval of that ticket or a listed set |
 | `/review-committee rereview` | Optional **P7**: independently check changes made later by an external process (review only) |
 
-To run several stages unattended, say so explicitly, e.g. `/review-committee next — run all stages without stopping`. Each step still passes its own gate and state transition, and you get one consolidated summary at the end.
+Each stage is one command and stops at its end, so your session usage limit is never run through unattended.
 
-During a review the Chair never asks you routine questions. The only interactions are the two commands above and the end-of-phase progress note.
+During a review the Chair never asks you routine questions. The only interactions are the two commands above and the end-of-stage progress note.
 
 ## Phases
 

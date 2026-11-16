@@ -49,7 +49,7 @@ The Chair owns ticket generation as part of P5/P6. Do not create or dispatch a s
 | 3/3 Plan | P4 debate (skipped unless requested), P5 decisions + tickets, P6 readiness gate | Review complete after P6 |
 | Optional | P7 re-review | `rereview` |
 
-Within a stage run each step's runbook in order, completing its own validation, gate and `state.py advance` before the next step. After each step give a **one-line** progress note; at the stage end give the 5-line-max summary (`advance` prints when a stage completes). **Resumable:** when `next` finds a step in progress, skip roles whose output already validates (e.g. a valid `findings/<ROLE>.json`, a `verification/by-<ROLE>.json`) and dispatch only what is missing; never restart a step. An explicit user instruction to run several stages unattended overrides stopping at stage ends.
+**A stage is one command.** Run every step of the current stage back to back (e.g. `next` in Stage 2 runs P2 *and* P3), completing each step's validation, gate and `state.py advance` before the next. Do **not** stop between steps of a stage, and do **not** ask the user to run `next` again mid-stage. Give a **one-line** progress note after each step and the 5-line-max summary at the stage end only. **Never run into the next stage, and never offer or run an all-stages unattended mode:** the user's session usage limit is protected by stopping at every stage end. **Resumable:** if `next` finds a step in progress (e.g. after a usage limit), skip roles whose output already validates (a valid `findings/<ROLE>.json`, a `verification/by-<ROLE>.json`) and dispatch only what is missing; never restart a step.
 
 ## Dispatching agents
 - Use the **Agent tool** (named **Task** in some Claude Code versions) with `subagent_type` = the agent name, e.g. `review-architect`.
@@ -81,11 +81,11 @@ Within a stage run each step's runbook in order, completing its own validation, 
 ## Phase runbooks
 Follow exactly: `references/phase-P0.md` … `references/phase-P7.md`. Each defines dispatches, order, gate and closing steps. **Never advance a phase whose gate fails** — fix or record why and continue within the phase.
 
-## Closing every phase (always)
+## Closing every step (always)
 1. Run the phase gate checks.
 2. Stop any dev server you started; log it.
 3. Follow the phase runbook close: rebuild the report, run `state.py dispatch-metrics` once, then `state.py advance` (at P5 and P6 it runs `ticket-check.py` / `trace-check.py` itself and refuses to advance on failure; `--force` is logged and only for a recorded reason). Do not dispatch SCR solely for report writing.
-4. Give the user the ≤5-line progress note.
+4. Give the one-line step note; the ≤5-line summary only when the stage ends (`advance` says so).
 
 ## Your own writing duties
 You personally write: `brief/product-brief.md`, `brief/product-context.json` (P0; enrich from observed P1 flows), `brief/review-scope.md` (templates in `references/templates/`), dispute files (`debates/DBT-NNN/dispute.json`), `decisions/decision-log.json`, `decisions/roadmap.json`, `gate/readiness-gate.json`, and canonical planning tickets (`implementation/tickets/TASK-NNN.json`). Generate `START-HERE.md`, `tickets/INDEX.md`, `PLAN/roadmap.md` and `DECISIONS/decision-log.md` only via `build-pack-views.py` (never by hand). Validate each structured record. **Ownership split:** you own tickets, TASK IDs, decomposition and roadmap decisions; specialists own the content of their `REFERENCES/*`; the Chair runs the view generator (`START-HERE.md` and the other views are script-generated); the Scribe is dispatched only on assignment.

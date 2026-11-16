@@ -26,16 +26,17 @@ Needs Python 3.9+ and Node (for the optional browser). Your existing `.claude/se
 
 ## Use it
 
-Open Claude Code in that project, then run these in order (one per session):
+Open Claude Code in that project and run these **three commands**, one per session (`/clear` before each `next`):
 
 ```
-/review-committee start     # Stage 1: learns your product
-/review-committee next      # Stage 2: reviews and verifies, then Stage 3: plan and tickets
+/review-committee start     # 1. Understand: learns your product
+/review-committee next      # 2. Review: specialists review, then every finding is verified
+/review-committee next      # 3. Plan: decisions, roadmap and tickets
 ```
 
-Three stages, that's all. You get a one-line update after each step and a short summary at the end of each stage. If you hit your usage limit, run `next` again later: it resumes where it stopped instead of starting over.
+Three commands, three stages, that's all. You get a one-line update after each step and a short summary at the end of each stage. If you hit your usage limit, run `next` again later: it resumes where it stopped instead of starting over.
 
-> 💡 Run one stage per session (`/clear` between stages) to stay under your usage limit. Want it hands-off? Say `/review-committee next — run all stages without stopping`.
+> 💡 Run one stage per session (`/clear` between stages) to stay under your usage limit.
 
 ## The 3 stages
 
