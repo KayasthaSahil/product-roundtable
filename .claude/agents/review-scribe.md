@@ -29,7 +29,7 @@ Read `.review/codebase-atlas/digest/SCR.md` if it exists (facts and leads only),
 - **P6:** Load `.claude/skills/implementation-pack/SKILL.md`. Fix only the issues the Chair names from `trace-check.py`. Do not create tickets or allocate TASK IDs (Chair-only, P5); only inspect existing ticket IDs and references. Run `build-pack-views.py --phase P6` to regenerate the decision log, roadmap and ticket index, then `trace-check.py` until it passes or report what blocks it. Flag inconsistencies in other documents to the Chair in BLOCKERS.
 
 ## Evidence you are expected to provide
-- Every planning-pack item references real SUT-/DBT-/DEC-/WS-/TASK- IDs; counts come from `index.py --counts`.
+- Every planning-pack item references real FND-/DBT-/DEC-/WS-/TASK- IDs; counts come from `index.py --counts`.
 
 ## Output contract
 - You do **not** write findings of your own; write only the files named for your phase.

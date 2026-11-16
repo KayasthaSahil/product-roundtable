@@ -7,7 +7,7 @@ One section per document. Copy the section you need into the target file under `
 ## Template: adr
 
 # ADR-NNN — <Decision title>
-*Owner: ARC. Every item must reference the finding (SUT-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
+*Owner: ARC. Every item must reference the finding (FND-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
 
 ## Status (Accepted)
 <!-- fill -->
@@ -24,7 +24,7 @@ One section per document. Copy the section you need into the target file under `
 ## Consequences
 <!-- fill -->
 
-## Linked: DEC-, SUT-
+## Linked: DEC-, FND-
 <!-- fill -->
 
 ---
@@ -32,7 +32,7 @@ One section per document. Copy the section you need into the target file under `
 ## Template: ai-system
 
 # AI System Specification
-*Owner: AI. Every item must reference the finding (SUT-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
+*Owner: AI. Every item must reference the finding (FND-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
 
 ## Prompt architecture (layers, ownership, versioning)
 <!-- fill -->
@@ -60,7 +60,7 @@ One section per document. Copy the section you need into the target file under `
 ## Template: architecture
 
 # Target Architecture
-*Owner: ARC. Every item must reference the finding (SUT-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
+*Owner: ARC. Every item must reference the finding (FND-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
 
 ## Current architecture (brief, with diagram)
 <!-- fill -->
@@ -88,7 +88,7 @@ One section per document. Copy the section you need into the target file under `
 ## Template: cost-performance
 
 # Cost & Performance Model
-*Owner: CPE. Every item must reference the finding (SUT-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
+*Owner: CPE. Every item must reference the finding (FND-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
 
 ## Cost per unit of work today (breakdown, assumptions, sources)
 <!-- fill -->
@@ -110,7 +110,7 @@ One section per document. Copy the section you need into the target file under `
 ## Template: design-system
 
 # Design System
-*Owner: VIS. Every item must reference the finding (SUT-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
+*Owner: VIS. Every item must reference the finding (FND-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
 
 ## Visual direction (principles, references)
 <!-- fill -->
@@ -132,7 +132,7 @@ One section per document. Copy the section you need into the target file under `
 ## Template: media-pipeline
 
 # Media Pipeline Specification
-*Owner: MED. Every item must reference the finding (SUT-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
+*Owner: MED. Every item must reference the finding (FND-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
 
 ## Pipeline stages and contracts
 <!-- fill -->
@@ -178,7 +178,7 @@ Describe system-level transition stages, compatibility constraints, and reversib
 ## Template: risk-register
 
 # Risk Register
-*Owner: RED · CHR. Every item must reference the finding (SUT-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
+*Owner: RED · CHR. Every item must reference the finding (FND-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
 
 ## Pre-mortem summary
 <!-- fill -->
@@ -191,7 +191,7 @@ Describe system-level transition stages, compatibility constraints, and reversib
 ## Template: terminology-and-copy
 
 # Terminology & Copy
-*Owner: DOC. Every item must reference the finding (SUT-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
+*Owner: DOC. Every item must reference the finding (FND-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
 
 ## Glossary (term · meaning · use instead of)
 <!-- fill -->
@@ -213,7 +213,7 @@ Describe system-level transition stages, compatibility constraints, and reversib
 ## Template: test-strategy
 
 # Test Plan
-*Owner: QA. Every item must reference the finding (SUT-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
+*Owner: QA. Every item must reference the finding (FND-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
 
 ## Test strategy (what kind of test for what)
 <!-- fill -->
@@ -235,7 +235,7 @@ Describe system-level transition stages, compatibility constraints, and reversib
 ## Template: ux-flows
 
 # UX Flows
-*Owner: UX · XAI. Every item must reference the finding (SUT-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
+*Owner: UX · XAI. Every item must reference the finding (FND-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
 
 ## Primary journeys (target flow per journey)
 <!-- fill -->
@@ -257,7 +257,7 @@ Describe system-level transition stages, compatibility constraints, and reversib
 ## Template: workstream
 
 # WS-NN — <Workstream title>
-*Owner: Workstream owner. Every item must reference the finding (SUT-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
+*Owner: Workstream owner. Every item must reference the finding (FND-), debate (DBT-) and decision (DEC-) IDs it is based on. Plain language; no padding; no new information beyond the review record.*
 
 ## Problem (plain language)
 <!-- fill -->

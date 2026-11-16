@@ -112,7 +112,7 @@ The canonical planning unit is `.review/implementation/tickets/TASK-NNN.json`. T
 
 ## Rules for all pack content
 
-1. **Grounded only in the review record.** Every requirement, change, and ticket references relevant SUT-/DBT-/DEC-/WS- IDs. Do not add recommendations the committee did not decide.
+1. **Grounded only in the review record.** Every requirement, change, and ticket references relevant FND-/DBT-/DEC-/WS- IDs. Do not add recommendations the committee did not decide.
 2. **Plain and lean.** Explain jargon once. Avoid repeated introductions, executive summaries, or duplicated task instructions.
 3. **Stack-true.** Use the verified stack profile and repository conventions.
 4. **Consistent terminology.** Use `REFERENCES/terminology-and-copy.md` when present.

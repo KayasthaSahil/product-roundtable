@@ -17,7 +17,7 @@
         "properties": {
           "finding_id": {
             "type": "string",
-            "pattern": "^SUT-(PMV|PMS|CMP|ARC|FE|BE|AI|MED|VIS|UX|XAI|DOC|QA|CPE|RED|VER)-\\d{3}$"
+            "pattern": "^FND-(PMV|PMS|CMP|ARC|FE|BE|AI|MED|VIS|UX|XAI|DOC|QA|CPE|RED|VER)-\\d{3}$"
           },
           "verdict": {
             "enum": [

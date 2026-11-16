@@ -52,7 +52,7 @@ Generate it from the Atlas (no manual writing): `python3 .claude/skills/codebase
 
 ## Step 5 — Setup and build once
 1. Check the run log first: `python3 .claude/skills/review-standards/scripts/runlog.py find "<install cmd>"`.
-2. Run install and build **once** (Bash timeout ≤ 10 min each; plain install only, never add/remove packages).
+2. Run install and build **once**, only if the project's build/start genuinely needs it to be inspected (Bash timeout ≤ 10 min each; plain install only, never add/remove packages). **Never create a virtualenv, `node_modules` copy or any environment inside `.review/`** (it can be hundreds of MB and is useless to the report). Prefer the project's existing environment; if none works, read the code instead and note the limitation.
 3. Log each: `runlog.py add --cmd "<cmd>" --kind setup|build --role ARC --exit <code> --duration <s> --output .review/runs/<name>.log --note "..."` (save output with `> .review/runs/<name>.log 2>&1`).
 4. If a step fails twice, stop retrying; record it in `stack-profile.md` → "Environment issues" and as a finding.
 

@@ -4,7 +4,7 @@
   index.py                      one line per finding: id | sev | category | area | verdict | disposition | title
   index.py --role BE            filter by role      --severity High   --verdict verified   --undecided
   index.py --counts             counts by severity / category / role / verdict
-  index.py --show SUT-BE-004    print one finding in full
+  index.py --show FND-BE-004    print one finding in full
 """
 import glob, json, os, sys
 from collections import Counter

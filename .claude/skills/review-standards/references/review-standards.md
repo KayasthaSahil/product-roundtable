@@ -31,7 +31,7 @@ Every finding must include:
 
 | Field | Requirement |
 |---|---|
-| `id` | `SUT-<ROLE>-<NNN>` (e.g. `SUT-BE-007`) |
+| `id` | `FND-<ROLE>-<NNN>` (e.g. `FND-BE-007`) |
 | `title` | One line naming the problem, not the solution |
 | `role` | Role code of the author |
 | `category` | Exactly one category from §4 |
@@ -273,7 +273,7 @@ The committee's job is review, analysis, debate, verification, and planning.
 ## 14. Traceability
 
 - Every item is traceable end to end: **Finding → Verification → Debate → Decision → Roadmap item → Implementation task → Re-review result**.
-- IDs are stable and never reused: `SUT-<ROLE>-<NNN>`, `DBT-<NNN>`, `DEC-<NNN>`, `WS-<NN>`, `TASK-<NNN>`. TASK IDs identify canonical planning tickets for future implementation, stored in `.review/implementation/tickets/`. The committee creates and plans this work; it does not execute it.
+- IDs are stable and never reused: `FND-<ROLE>-<NNN>`, `DBT-<NNN>`, `DEC-<NNN>`, `WS-<NN>`, `TASK-<NNN>`. TASK IDs identify canonical planning tickets for future implementation, stored in `.review/implementation/tickets/`. The committee creates and plans this work; it does not execute it.
 - Every document in the Implementation Pack references the IDs it addresses.
 
 ---

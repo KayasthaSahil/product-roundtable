@@ -116,8 +116,8 @@ def semantic_findings(doc, errs, check_refs):
         if fid in seen:
             errs.append(f"{p}: duplicate id")
         seen.add(fid)
-        if role and not fid.startswith(f"SUT-{role}-"):
-            errs.append(f"{p}: id prefix must be SUT-{role}-")
+        if role and not fid.startswith(f"FND-{role}-"):
+            errs.append(f"{p}: id prefix must be FND-{role}-")
         if f.get("role") and role and f["role"] != role:
             errs.append(f"{p}: role '{f['role']}' differs from file role '{role}'")
         if f.get("kind") == "finding":
@@ -182,7 +182,7 @@ def main():
         for it in items:
             refs = [it.get("finding_id")] if "finding_id" in it else it.get("findings", [])
             for r in refs:
-                if r and r.startswith("SUT-") and r not in ids:
+                if r and r.startswith("FND-") and r not in ids:
                     errs.append(f"unknown finding id referenced: {r}")
     if errs:
         print(f"INVALID: {path} ({len(errs)} error(s))")

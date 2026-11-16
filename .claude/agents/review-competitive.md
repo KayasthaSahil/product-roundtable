@@ -37,7 +37,7 @@ Read `.review/codebase-atlas/digest/CMP.md` if it exists (facts and leads only),
 Load `.claude/skills/debate-protocol/SKILL.md` and follow it: write `.review/debates/DBT-NNN/<ROLE>-r<N>.json` per the round in the packet. Round 1: your position with evidence. Round 2: read opposing positions; challenge assumptions, acknowledge valid points, revise if the evidence justifies it.
 
 ## Output contract
-- Findings and strengths → `.review/findings/CMP.json` (schema `findings-file`; role `CMP`; IDs `SUT-CMP-NNN`; set `phase` on each item; set `cycle` from `.review/state.json`).
+- Findings and strengths → `.review/findings/CMP.json` (schema `findings-file`; role `CMP`; IDs `FND-CMP-NNN`; set `phase` on each item; set `cycle` from `.review/state.json`).
 - Evidence files (screenshots, logs, outputs) → `.review/evidence/CMP/` or `.review/runs/`; cite their paths.
 - Validate every file you write: `python3 .claude/skills/review-standards/scripts/validate.py <kind> <file> --check-refs`. Fix all errors before returning.
 - Return **only** the standard ≤10-line summary (STATUS / WROTE / COUNTS / TOP 3 / HANDOFFS / BLOCKERS).

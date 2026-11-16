@@ -16,7 +16,7 @@ Transform the product into a distinctive, polished, reliable, maintainable, prod
 
 ## Findings
 - One file per role: `.review/findings/<ROLE>.json` (schema: `schemas/findings-file.schema.json`). Append across phases; never edit other roles' files.
-- Every finding: id `SUT-<ROLE>-<NNN>`, title (the problem, not the fix), category, severity, location, evidence, problem, impact, recommendation, confidence.
+- Every finding: id `FND-<ROLE>-<NNN>`, title (the problem, not the fix), category, severity, location, evidence, problem, impact, recommendation, confidence.
 - **Tiered detail (saves output tokens; depth of investigation is unchanged):**
   - **Critical / High — full form:** also repro steps (or code/command evidence), current behaviour where distinct, root cause, assumptions, and a recommendation with `what`, `why`, `expected_outcome`, `verification`.
   - **Medium — standard form:** recommendation with `what` + `verification` (observable acceptance criterion). `why` / `expected_outcome` / `root_cause` optional.

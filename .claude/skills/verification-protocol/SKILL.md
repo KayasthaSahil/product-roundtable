@@ -18,7 +18,7 @@ The Chair has already run `scripts/auto-verify.py`: Low/Opportunity and excerpt-
 3. **Verify directly**: every Critical and High finding, and every finding whose evidence is code or commands you can check by reading. Use targeted runs only if essential (budget: hook-enforced 5 per cycle, ≤5 min).
 4. **Assign the rest** to cross-verifiers from an adjacent area — never the author. Suggested pairings: FE↔UX/VIS, BE↔ARC/QA, AI↔BE/XAI, MED↔CPE/FE, VIS↔UX, UX↔XAI/PMV, XAI↔UX/AI, DOC↔UX, QA↔BE, CPE↔MED/AI, PMV↔PMS, PMS↔PMV, CMP↔PMV, ARC↔BE.
 5. Write `.review/verification/verification-log.json` with your verdicts so far, and `.review/verification/assignments.json`:
-   `{"assignments": {"UX": ["SUT-VIS-003", ...], ...}}`
+   `{"assignments": {"UX": ["FND-VIS-003", ...], ...}}`
 
 ## B. Cross-verifier (P3 step 2)
 For each assigned ID: read the finding (`index.py --show <ID>`), reproduce or inspect the evidence, decide a verdict, record `method` (what you did) and your own evidence. Write `.review/verification/by-<ROLE>.json` (`{"verdicts": [...]}`, verification schema). You may not change the finding itself.

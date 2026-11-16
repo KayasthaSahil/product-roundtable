@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Print the next free ID. Run from repo root.
-  next-id.py SUT-BE   -> SUT-BE-004      next-id.py DBT -> DBT-002
+  next-id.py FND-BE   -> FND-BE-004      next-id.py DBT -> DBT-002
   next-id.py DEC | WS | TASK [count] (TASK IDs are implementation tickets)
 """
 import glob, os, re, sys

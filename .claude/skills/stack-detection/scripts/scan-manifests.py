@@ -62,11 +62,11 @@ for dp, dns, fns in os.walk("."):
         if (parts[:1] == [".github"] and "workflows" in parts) or fn in (".gitlab-ci.yml", "Jenkinsfile", "azure-pipelines.yml", "bitbucket-pipelines.yml"):
             out["ci"].append(p)
         is_doc = ext in (".md", ".mdx", ".txt", ".rst", "") or fn.lower() in (".cursorrules",)
-        if parts[:2] == [".claude", "skills"] and re.search(r"(review-|stack-detection|debate-protocol|verification-protocol|report-builder|implementation-pack)", p):
+        if parts[:2] == [".claude", "skills"] and re.search(r"(review-|codebase-atlas|stack-detection|debate-protocol|verification-protocol|report-builder|implementation-pack)", p):
             is_doc = False
         if (CONTEXT_RE.match(fn) and is_doc) or (is_doc and any(x in ("docs", "doc", "adr", "adrs") for x in [q.lower() for q in parts]) and ext in (".md", ".mdx", ".txt")):
             out["context_files"].append(p)
-        if parts[:1] == [".claude"] and not re.search(r"(review-|review_committee|skills[\\/](review-|stack-detection|debate-protocol|verification-protocol|report-builder|implementation-pack))", p):
+        if parts[:1] == [".claude"] and not re.search(r"(review-|review_committee|hooks[\/](guard-|_common)|skills[\\/](review-|stack-detection|debate-protocol|verification-protocol|report-builder|implementation-pack))", p):
             out["claude_dir"].append(p)
 out["size"]["by_language"] = dict(lang.most_common())
 out["size"]["by_top_folder"] = dict(top.most_common(25))

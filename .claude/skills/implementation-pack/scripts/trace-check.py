@@ -102,7 +102,7 @@ def main():
             errors.append(f"{tid} is absent from generated tickets/INDEX.md")
 
     # Validate all IDs mentioned in Markdown against canonical review/ticket records.
-    pattern = re.compile(r"\b(SUT-[A-Z]{2,3}-\d{3}|DEC-\d{3}|DBT-\d{3}|WS-\d{2}|TASK-\d{3})\b")
+    pattern = re.compile(r"\b(FND-[A-Z]{2,3}-\d{3}|DEC-\d{3}|DBT-\d{3}|WS-\d{2}|TASK-\d{3})\b")
     for path in glob.glob(f"{I}/**/*.md", recursive=True):
         for ref in set(pattern.findall(read(path))):
             if ref not in ids:

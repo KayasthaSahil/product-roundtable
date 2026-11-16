@@ -62,7 +62,7 @@ Only when the Chair opens it because Round 2 introduced new evidence. Address on
   "role": "ARC",
   "round": 1,
   "headline": "Split the render worker from the API now; it is the root of three reliability findings",
-  "stance": "Support SUT-ARC-004 approach A (separate worker process with a job table)",
+  "stance": "Support FND-ARC-004 approach A (separate worker process with a job table)",
   "argument": "Plain-language reasoning, tied to evidence. 3–8 sentences.",
   "evidence": [
     {"type": "code", "ref": "server/render.ts:40-88", "detail": "render runs inside the request handler; a timeout kills the job"},

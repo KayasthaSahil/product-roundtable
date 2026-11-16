@@ -50,7 +50,7 @@ Load `.claude/skills/verification-protocol/SKILL.md` (section B). Verify only th
 For each of **your** original finding IDs in the packet: inspect the implemented change (diff summary + code), check every acceptance criterion with fresh evidence, and record `resolved` / `partially-resolved` / `not-resolved` / `regressed` in `.review/rereview/<ROLE>.json` (schema `rereview`). Regressions or new problems become new findings (`"phase": "P7"`) in your findings file. "Code changed" is not resolution — "the problem no longer occurs, here is the evidence" is.
 
 ## Output contract
-- Findings and strengths → `.review/findings/PMV.json` (schema `findings-file`; role `PMV`; IDs `SUT-PMV-NNN`; set `phase` on each item; set `cycle` from `.review/state.json`).
+- Findings and strengths → `.review/findings/PMV.json` (schema `findings-file`; role `PMV`; IDs `FND-PMV-NNN`; set `phase` on each item; set `cycle` from `.review/state.json`).
 - Evidence files (screenshots, logs, outputs) → `.review/evidence/PMV/` or `.review/runs/`; cite their paths.
 - Validate every file you write: `python3 .claude/skills/review-standards/scripts/validate.py <kind> <file> --check-refs`. Fix all errors before returning.
 - Return **only** the standard ≤10-line summary (STATUS / WROTE / COUNTS / TOP 3 / HANDOFFS / BLOCKERS).

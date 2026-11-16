@@ -47,7 +47,7 @@ TIER_NOTES = {
     'ast-failed': 'parser failed on these files (syntax error or unreadable); no structure extracted',
     'inventory': 'listed only; contents not analysed',
 }
-IGNORE_DIRS = {'.git','.review','.venv','venv','env','node_modules','vendor','dist','build','coverage','.next','.nuxt','.turbo','__pycache__','.mypy_cache','.pytest_cache','target','bin','obj','Pods'}
+IGNORE_DIRS = {'.git','.claude','.review','.venv','venv','env','node_modules','vendor','dist','build','coverage','.next','.nuxt','.turbo','__pycache__','.mypy_cache','.pytest_cache','target','bin','obj','Pods'}
 SECRET_NAMES = {'.env','.env.local','.env.production','.npmrc','.pypirc','id_rsa','id_ed25519'}
 CODE_EXTS = {'.py','.pyi','.js','.jsx','.ts','.tsx','.mjs','.cjs','.java','.kt','.go','.rs','.rb','.php','.cs','.vue','.svelte','.html','.css','.scss','.sql'}
 TEXT_EXTS = {'.py','.pyi','.js','.jsx','.ts','.tsx','.mjs','.cjs','.java','.kt','.go','.rs','.rb','.php','.cs','.vue','.svelte','.html','.css','.scss','.sql','.yaml','.yml','.toml','.json','.xml','.md','.sh','.bash','.gradle','.properties','.ini','.cfg','.conf','.dockerfile'}
@@ -634,6 +634,7 @@ def write_digests(cap=40):
           'Coverage warnings: '+('; '.join(ex.get('warnings',[])) or 'none'),
           'More detail: `python3 .claude/skills/codebase-atlas/scripts/atlas.py search|module|dependencies <q>`; a missing item is not proof of absence.','']
     for role,spec in DIGEST_ROLES.items():
+        if not spec.get('kinds') and not spec.get('files'): continue  # VER/SCR need no digest
         out=list(head); kw=spec.get('kw')
         for kind in spec.get('kinds',()):
             rows=[r for r in recs if r['kind']==kind]

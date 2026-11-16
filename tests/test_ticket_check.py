@@ -22,7 +22,7 @@ class TicketCheckTests(unittest.TestCase):
         (self.root / "src/service.py").write_text("def run():\n    return True\n", encoding="utf-8")
         self.write_json(".review/findings/BE.json", {
             "role": "BE", "cycle": 1, "findings": [{
-                "id": "SUT-BE-001", "kind": "finding", "title": "Run lock is not atomic",
+                "id": "FND-BE-001", "kind": "finding", "title": "Run lock is not atomic",
                 "role": "BE", "phase": "P2", "location": "src/service.py",
                 "evidence": [{"type": "code", "ref": "src/service.py:1"}],
                 "problem": "Concurrent run attempts can both enter the critical section.",
@@ -34,7 +34,7 @@ class TicketCheckTests(unittest.TestCase):
             }]
         })
         self.write_json(".review/decisions/decision-log.json", {"decisions": [{
-            "id": "DEC-001", "title": "Make run locking atomic", "findings": ["SUT-BE-001"],
+            "id": "DEC-001", "title": "Make run locking atomic", "findings": ["FND-BE-001"],
             "disposition": "Accepted", "rationale": "Prevent concurrent mutation of one run.",
             "owner_role": "BE", "workstream": "WS-01", "implementation_required": True,
             "ticket_ids": ["TASK-001"]
@@ -62,7 +62,7 @@ class TicketCheckTests(unittest.TestCase):
         }
         return {
             "id": "TASK-001", "title": "Make run lock acquisition atomic", "status": "DRAFT",
-            "priority": "High", "workstream": "WS-01", "findings": ["SUT-BE-001"],
+            "priority": "High", "workstream": "WS-01", "findings": ["FND-BE-001"],
             "decisions": ["DEC-001"], "disputes": [],
             "objective": "Ensure one process owns a run lock at a time.",
             "current_behavior": "Concurrent processes can enter the run operation without an atomic exclusion guarantee.",

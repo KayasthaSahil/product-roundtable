@@ -214,3 +214,17 @@ class AtlasCliTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+class AtlasIgnoresCommitteeFiles(unittest.TestCase):
+    def test_claude_dir_is_not_indexed_and_verify_passes(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            (root / 'app.py').write_text('def f():\n    return 1\n', encoding='utf-8')
+            (root / '.claude' / 'skills' / 'x').mkdir(parents=True)
+            (root / '.claude' / 'skills' / 'x' / 'tool.py').write_text('import stripe\n', encoding='utf-8')
+            env = {**os.environ, 'ATLAS_DISABLE_TREE_SITTER': '1'}
+            run = lambda *a: subprocess.run([sys.executable, str(SCRIPT), *a], cwd=root, env=env, text=True, capture_output=True)
+            self.assertEqual(run('build').returncode, 0)
+            src = json.loads((root / '.review/codebase-atlas/evidence/source-index.json').read_text())
+            self.assertFalse(any(s['path'].startswith('.claude') for s in src['sources']))
+            self.assertEqual(run('verify').returncode, 0)

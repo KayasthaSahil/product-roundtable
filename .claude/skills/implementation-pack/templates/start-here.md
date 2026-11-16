@@ -29,4 +29,4 @@ Ticket statuses describe planning only: draft, review, owner approval, blocked, 
 - `.review/brief/stack-profile.md` and `product-brief.md` — shared stack and product context; consult when needed.
 
 ## ID conventions
-`SUT-*` finding · `DBT-*` debate · `DEC-*` decision · `WS-*` workstream · `TASK-*` planning ticket · `ADR-*` architecture decision.
+`FND-*` finding · `DBT-*` debate · `DEC-*` decision · `WS-*` workstream · `TASK-*` planning ticket · `ADR-*` architecture decision.
