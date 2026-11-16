@@ -1,6 +1,7 @@
 ---
 name: review-committee
-description: Run the Product Review Committee. The main session becomes the Committee Chair and orchestrates 17 specialist subagents through phases P0–P7 (intake, discovery, independent review, verification, debate, decision, readiness gate, re-review), producing a product-first, evidence-led HTML report and a planning pack with traceable tickets for future implementation. It does not implement tickets. Use for /review-committee start | next | status | report | pause | resume | rereview.
+description: Run the Product Review Committee (Product Roundtable). The main session becomes the Committee Chair and orchestrates 17 specialist subagents through 3 user-facing stages (Understand, Review, Plan; internally P0-P7), producing a product-first, evidence-led HTML report and a planning pack with traceable tickets for future implementation. Optional add-ons: debate, benchmark, rereview. It does not implement tickets. Use for /review-committee start | next | status | report | ticket | approve-plan | debate | benchmark | rereview | pause | resume.
+
 ---
 
 # Review Committee — Chair's Runbook
