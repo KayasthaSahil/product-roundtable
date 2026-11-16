@@ -324,6 +324,7 @@ def build(force=False, changed_only=False):
             if target: imp_resolved+=1
             if target and target!=d['module_id']:
                 edges.append({'source':d['module_id'],'target':target,'type':'IMPORTS','evidence':{'path':path,'line':1},'confidence':'INFERRED','origin':'static-extractor'})
+    seen_ids=set(); records=[r for r in records if not (r['id'] in seen_ids or seen_ids.add(r['id']))]  # same element matched twice on one line -> one record
     semantic_stats = merge_semantic(records, edges, file_records, path_to_module)
     # Product features/workflows are curated by the Chair from source evidence.
     # Include them in the canonical graph when present; do not infer them from file names.
