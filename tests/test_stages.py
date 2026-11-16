@@ -88,3 +88,13 @@ class CapsAndTokensTests(StageTests):
         self.run_state('dispatch', 'QA', 'y', '--result', 'complete', '--total-tokens', '800')
         out = self.run_state('dispatch-metrics').stdout
         self.assertIn('this step=2000', out)
+
+
+class DepthByLinesTests(StageTests):
+    def test_depth_uses_atlas_lines_of_code(self):
+        d = self.root / '.review/codebase-atlas/evidence'; d.mkdir(parents=True)
+        (d / 'source-index.json').write_text(json.dumps({"sources": [
+            {"path": "a.ts", "line_count": 4000}, {"path": "package-lock.json", "line_count": 90000}]}))
+        self.assertIn('lite', self.run_state('depth').stdout)
+        (d / 'source-index.json').write_text(json.dumps({"sources": [{"path": "a.ts", "line_count": 9000}]}))
+        self.assertIn('full', self.run_state('depth').stdout)

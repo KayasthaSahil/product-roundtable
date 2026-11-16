@@ -7,8 +7,7 @@
 2. Read `specialist-dispatch-matrix.md`. Dispatch:
    - `review-pm-value` — mandatory: first-time use/value discovery; write `.review/brief/user-profiles.md` and first-impression findings.
    - `review-competitive` — **only if `state.json` has `benchmark: true`** (user ran `/review-committee benchmark`): competitive benchmark `.review/brief/competitive-benchmark.md` (+ Opportunity findings). Otherwise record `state.py skip CMP "benchmark not requested"`.
-   - `review-visual-design` — only if a user-facing visual interface exists and can be inspected.
-   - `review-ux` — only if meaningful user journeys or interaction flows exist.
+   - `review-visual-design` and `review-ux` — **only if the app is actually running and the browser tools work** (`dev_server_url` is set and a Playwright page loaded). A first-impression walkthrough needs a usable app. If the app cannot run or the browser fails, do NOT dispatch them: record `state.py skip VIS "app not runnable: covered by P2 code review"` (same for UX). PMV still runs.
    Bundle any additional discovery questions for a role into the same invocation. Skip irrelevant roles and record why.
 3. Validate each output.
 4. Chair updates `.review/brief/product-context.json` only with material user profiles/use cases confirmed by PMV/UX or observed in the app; retain evidence and basis labels. Do not re-summarise the whole product. Revalidate the file.

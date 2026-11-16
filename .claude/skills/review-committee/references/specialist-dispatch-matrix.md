@@ -24,8 +24,8 @@ This is the authoritative dispatch policy for the Review Committee. Phase runboo
 | P0 | Other specialists | Skip | Activate roles for later phases; do not dispatch them during intake without a specific intake question. |
 | P1 | PMV | Mandatory | First-time user/value discovery and evidence-based user profiles. |
 | P1 | CMP | Optional | Competitive benchmark and opportunity scan; dispatch only when the user requested it (`benchmark`). This is a user-selected add-on, not a token-motivated skip. |
-| P1 | VIS | Conditional | Product has a user-facing visual interface available to inspect. |
-| P1 | UX | Conditional | Product has meaningful user journeys or interaction flows. |
+| P1 | VIS | Conditional | Product has a user-facing visual interface that is running and inspectable in a browser. If the app or browser is unavailable, skip with reason "app not runnable: covered by P2 code review". |
+| P1 | UX | Conditional | Meaningful user journeys exist and the app is running and usable in a browser. If not, skip with reason "app not runnable: covered by P2 code review". |
 | P1 | Other specialists | Skip | No P1 assignment unless a material discovery question is documented. |
 | P2 | PMV, PMS, ARC, FE, BE, AI, MED, VIS, UX, XAI, DOC, QA, CPE | On assignment | Dispatch each active primary reviewer whose assigned area exists in `review-scope.md`; include only the assigned area. Record a phase-level non-dispatch for absent/irrelevant areas; do not merge specialist roles. CMP is not a P2 reviewer; RED/VER/SCR participate only under their phase-specific rules. |
 | P3 | VER | Mandatory, two passes | Planning/integrity assignment pass, then consolidation pass. These are distinct responsibilities, not duplicate retries. |
@@ -58,7 +58,7 @@ This is the authoritative dispatch policy for the Review Committee. Phase runboo
 
 ## Depth rule (P2, user-directed proportionality)
 
-`state.json` `depth` is set at the end of P0 (`state.py depth`): `lite` when the repo has at most 50 files, otherwise `full`; the user may override with `state.py depth full`. In `lite`, P2 dispatches the **core set**: ARC, QA, PMV, plus by surface in `stack-profile.json`: UX and FE (ui), BE (server/api), AI (ai_layer), XAI (ai_layer and ui), MED (render_pipeline). PMS, CPE, DOC and VIS are not dispatched in P2 (PMS still runs in P0 and conditionally in P5); record `state.py skip <ROLE> "lite depth: small repo, no separate assignment"`. All roles stay installed and active. Tell the user at the end of Stage 2 that `depth full` re-runs them.
+`state.json` `depth` is set at the end of P0 (`state.py depth`): `lite` when the repo has at most 5000 lines of source code (from the Atlas), otherwise `full`; the user may override with `state.py depth full`. In `lite`, P2 dispatches the **core set**: ARC, QA, PMV, plus by surface in `stack-profile.json`: UX and FE (ui), BE (server/api), AI (ai_layer), XAI (ai_layer and ui), MED (render_pipeline). PMS, CPE, DOC and VIS are not dispatched in P2 (PMS still runs in P0 and conditionally in P5); record `state.py skip <ROLE> "lite depth: small repo, no separate assignment"`. All roles stay installed and active. Tell the user at the end of Stage 2 that `depth full` re-runs them.
 
 ## Existing batch constraints
 

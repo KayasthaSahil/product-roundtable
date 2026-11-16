@@ -8,7 +8,7 @@
                                 P4 (debate) is skipped unless `debate` was requested.
   state.py debate               opt in to the P4 debate step (allowed after P3 and before P5 completes)
   state.py benchmark            opt in to the P1 competitive benchmark (CMP)
-  state.py depth [lite|full]    review depth for P2: no argument = decide from stack-profile.json (lite when <= 50 files)
+  state.py depth [lite|full]    review depth for P2: no argument = decide from code size (lite when <= 5000 lines of source code, from the Atlas)
   state.py dispatch <ROLE> "<task>" [--result complete|partial|blocked] [--bundle-count N] [--retry-of ID] [--input-tokens N --output-tokens N] [--total-tokens N] [--context-profile PROFILE]
   state.py skip <ROLE> "<reason>"                                      log an intentional skip
   state.py dispatch-metrics [--json]                                   summarise calls, skips, retries and reported tokens
@@ -196,11 +196,18 @@ elif cmd == "depth":
         if sys.argv[2] not in ("lite", "full"): sys.exit("depth must be lite or full")
         s["depth"] = sys.argv[2]
     else:
+        code_ext = (".py", ".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".java", ".kt", ".go", ".rs", ".rb", ".php", ".cs", ".vue", ".svelte", ".sql", ".html", ".css", ".scss")
+        loc = None
         try:
-            files = json.load(open(os.path.join(R, "brief", "stack-profile.json"), encoding="utf-8"))["size"]["files"]
+            src = json.load(open(os.path.join(R, "codebase-atlas", "evidence", "source-index.json"), encoding="utf-8"))["sources"]
+            loc = sum(x.get("line_count", 0) for x in src if x["path"].lower().endswith(code_ext))
         except Exception:
-            files = None
-        s["depth"] = "lite" if isinstance(files, int) and files <= 50 else "full"
+            try:  # fallback: file count from the stack profile (<= 50 files)
+                loc = 0 if json.load(open(os.path.join(R, "brief", "stack-profile.json"), encoding="utf-8"))["size"]["files"] <= 50 else 10**9
+            except Exception:
+                loc = None
+        s["depth"] = "lite" if isinstance(loc, int) and loc <= 5000 else "full"
+        print(f"Source lines: {loc}")
     save(s); print(f"Review depth: {s['depth']}")
 elif cmd == "benchmark":
     s = load(); s["benchmark"] = True; save(s); print("Competitive benchmark enabled for P1 (CMP).")
