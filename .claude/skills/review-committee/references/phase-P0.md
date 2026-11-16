@@ -15,7 +15,8 @@
 6. **Write `.review/brief/product-brief.md`** from `references/templates/product-brief.md`, grounded in existing-context and code. Cite paths.
 7. Create `.review/brief/product-context.json` for the HTML report: concise product description, evidenced user profiles, 3–8 real use cases as user journeys, and a grouped inventory of major current features. Use only documented or observed facts; use Atlas as navigation, verify important claims directly in source, mark intended versus observed basis, and cite source paths/screens. Do not invent personas, features, or workflows. Start from `references/templates/product-context.example.json`. Validate with `python3 .claude/skills/review-standards/scripts/validate.py product-context .review/brief/product-context.json`.
 8. **Create the first report** by running `python3 .claude/skills/report-builder/scripts/build-report.py` (no Scribe narrative invocation).
-9. **Write `.review/brief/review-scope.md`** from `references/templates/review-scope.md`:
+9. Run `python3 .claude/skills/review-committee/scripts/state.py depth` to set the review depth (lite for small repos).
+9b. **Write `.review/brief/review-scope.md`** from `references/templates/review-scope.md`:
    - Keep all 17 specialist agents installed, callable and active. Do not merge, deactivate or remove any role. Assign each its full existing scope and record applicability; the specialist-dispatch matrix controls phase-specific invocation only. An absent surface may justify a phase-specific non-dispatch, never removal of the agent.
    - Assign every product area to a primary reviewer.
    - Pick a small fixed set of sample projects for renders and AI generation (2–3) and set the budget.

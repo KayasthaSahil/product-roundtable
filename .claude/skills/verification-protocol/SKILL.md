@@ -16,7 +16,7 @@ The Chair has already run `scripts/auto-verify.py`: Low/Opportunity and excerpt-
 2. **Integrity checks on every queued finding** (see "Integrity checks" below): run
    `python3 .claude/skills/review-standards/scripts/validate.py findings .review/findings/<ROLE>.json --check-refs` for each file, then open cited code and confirm the excerpt/claim matches. A fabricated reference → `unverified` with note "reference does not exist / does not match".
 3. **Verify directly**: every Critical and High finding, and every finding whose evidence is code or commands you can check by reading. Use targeted runs only if essential (budget: hook-enforced 5 per cycle, ≤5 min).
-4. **Assign the rest** to cross-verifiers from an adjacent area — never the author. Suggested pairings: FE↔UX/VIS, BE↔ARC/QA, AI↔BE/XAI, MED↔CPE/FE, VIS↔UX, UX↔XAI/PMV, XAI↔UX/AI, DOC↔UX, QA↔BE, CPE↔MED/AI, PMV↔PMS, PMS↔PMV, CMP↔PMV, ARC↔BE.
+4. **Assign the rest** to cross-verifiers from an adjacent area — never the author — **only if more than 12 queued findings remain** (and never give a role fewer than 3; give those to yourself). Otherwise verify them all directly. Suggested pairings: FE↔UX/VIS, BE↔ARC/QA, AI↔BE/XAI, MED↔CPE/FE, VIS↔UX, UX↔XAI/PMV, XAI↔UX/AI, DOC↔UX, QA↔BE, CPE↔MED/AI, PMV↔PMS, PMS↔PMV, CMP↔PMV, ARC↔BE.
 5. Write `.review/verification/verification-log.json` with your verdicts so far, and `.review/verification/assignments.json`:
    `{"assignments": {"UX": ["FND-VIS-003", ...], ...}}`
 

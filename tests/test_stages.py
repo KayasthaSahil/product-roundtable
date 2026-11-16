@@ -44,3 +44,23 @@ class StageTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class DepthAndCleanupTests(StageTests):
+    def test_depth_follows_repo_size_and_can_be_overridden(self):
+        prof = self.root / '.review/brief'; prof.mkdir(parents=True, exist_ok=True)
+        (prof / 'stack-profile.json').write_text(json.dumps({"size": {"files": 8}}))
+        self.assertIn('lite', self.run_state('depth').stdout)
+        (prof / 'stack-profile.json').write_text(json.dumps({"size": {"files": 400}}))
+        self.assertIn('full', self.run_state('depth').stdout)
+        self.assertIn('lite', self.run_state('depth', 'lite').stdout)
+
+    def test_review_end_removes_env_and_playwright_noise_only(self):
+        (self.root / '.review/runs/env/lib').mkdir(parents=True)
+        shots = self.root / '.review/evidence/screenshots'; shots.mkdir(parents=True)
+        (shots / 'page-1.yml').write_text('x'); (self.root / '.review/evidence/keep.png').write_text('x')
+        self.run_state('start', 'P6')
+        self.assertEqual(self.run_state('advance', '--force').returncode, 0)
+        self.assertFalse((self.root / '.review/runs/env').exists())
+        self.assertFalse((shots / 'page-1.yml').exists())
+        self.assertTrue((self.root / '.review/evidence/keep.png').exists())

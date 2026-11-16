@@ -5,7 +5,7 @@ This is the authoritative dispatch policy for the Review Committee. Phase runboo
 ## Dispatch rules
 
 - All 17 specialist agents remain installed, callable and active for the review cycle. The active-role set is an inventory of available committee capabilities, not a requirement to invoke every role in every phase. Existing phase-specific dispatch/skip triggers below remain authoritative.
-- Never deactivate, merge, or phase-skip a specialist because the Atlas exists/is incomplete, to reduce token consumption, or to lower the number of agents. A phase-specific skip is valid only when the matrix trigger is not met or there is no substantive assignment; record the concrete scope reason.
+- Never deactivate, merge, or phase-skip a specialist because the Atlas exists/is incomplete, to reduce token consumption, or to lower the number of agents. The only exception is the user-directed **depth rule** below (small repositories). A phase-specific skip is valid only when the matrix trigger is not met or there is no substantive assignment; record the concrete scope reason.
 
 - Dispatch only active roles whose responsibility is materially relevant to the current phase and review scope.
 - `Mandatory` means dispatch when the phase runs and the role is active; `Conditional` means dispatch only when its trigger is met; `On assignment` means dispatch only when the Chair/Verifier assigns concrete work.
@@ -29,7 +29,7 @@ This is the authoritative dispatch policy for the Review Committee. Phase runboo
 | P1 | Other specialists | Skip | No P1 assignment unless a material discovery question is documented. |
 | P2 | PMV, PMS, ARC, FE, BE, AI, MED, VIS, UX, XAI, DOC, QA, CPE | On assignment | Dispatch each active primary reviewer whose assigned area exists in `review-scope.md`; include only the assigned area. Record a phase-level non-dispatch for absent/irrelevant areas; do not merge specialist roles. CMP is not a P2 reviewer; RED/VER/SCR participate only under their phase-specific rules. |
 | P3 | VER | Mandatory, two passes | Planning/integrity assignment pass, then consolidation pass. These are distinct responsibilities, not duplicate retries. |
-| P3 | Cross-verifiers | On assignment | Only roles assigned finding IDs by VER; never the finding author. Group all assigned IDs per role into one invocation. |
+| P3 | Cross-verifiers | On assignment | Only when more than 12 queued findings remain after VER's direct checks, and only roles receiving at least 3 IDs; never the finding author. Smaller queues are verified directly by VER. Group all assigned IDs per role into one invocation. |
 | P4 | Dispute parties | Optional step | The whole P4 step runs only when the user requested `debate`. Then: only roles named in an open dispute, bundled once per round. |
 | P4 | RED | Conditional | Dispatch for strategic/high-impact, security-sensitive, materially contested, or unresolved disputes. Do not dispatch for routine disagreements already resolved by evidence. |
 | P5 | PMV | Conditional | Accepted decisions materially change user requirements, user journeys, or success criteria. |
@@ -55,6 +55,10 @@ This is the authoritative dispatch policy for the Review Committee. Phase runboo
 | P7 | Original finding authors | On assignment | Dispatch only authors whose findings map to externally implemented decisions; bundle all mapped findings per role. |
 | P7 | VER | Mandatory | Independently verify every claimed resolved/partially-resolved item and regression disposition. |
 | P7 | Other specialists | Skip | Dispatch only if a concrete changed-area question cannot be answered by the original authors or VER. |
+
+## Depth rule (P2, user-directed proportionality)
+
+`state.json` `depth` is set at the end of P0 (`state.py depth`): `lite` when the repo has at most 50 files, otherwise `full`; the user may override with `state.py depth full`. In `lite`, P2 dispatches the **core set**: ARC, QA, PMV, plus by surface in `stack-profile.json`: UX and FE (ui), BE (server/api), AI (ai_layer), XAI (ai_layer and ui), MED (render_pipeline). PMS, CPE, DOC and VIS are not dispatched in P2 (PMS still runs in P0 and conditionally in P5); record `state.py skip <ROLE> "lite depth: small repo, no separate assignment"`. All roles stay installed and active. Tell the user at the end of Stage 2 that `depth full` re-runs them.
 
 ## Existing batch constraints
 

@@ -8,6 +8,7 @@
                                 P4 (debate) is skipped unless `debate` was requested.
   state.py debate               opt in to the P4 debate step (allowed after P3 and before P5 completes)
   state.py benchmark            opt in to the P1 competitive benchmark (CMP)
+  state.py depth [lite|full]    review depth for P2: no argument = decide from stack-profile.json (lite when <= 50 files)
   state.py dispatch <ROLE> "<task>" [--result complete|partial|blocked] [--bundle-count N] [--retry-of ID] [--input-tokens N --output-tokens N] [--context-profile PROFILE]
   state.py skip <ROLE> "<reason>"                                      log an intentional skip
   state.py dispatch-metrics [--json]                                   summarise calls, skips, retries and reported tokens
@@ -25,8 +26,8 @@ STAGE_END = {"P1": "Stage 1/3 (Understand)", "P3": "Stage 2/3 (Review)", "P6": "
 def stage_of(ph):
     return next((n for n, steps in STAGES if ph in steps), "Optional re-review")
 REQUIRED_ROLES = ["CHR", "PMV", "PMS", "CMP", "ARC", "FE", "BE", "AI", "MED", "VIS", "UX", "XAI", "DOC", "QA", "CPE", "RED", "VER", "SCR"]
-DIRS = ["brief", "findings", "verification", "debates", "decisions", "gate", "report", "implementation/adr",
-        "implementation/workstreams", "runs", "evidence/screenshots", "rereview", "codebase-atlas/discrepancies"]
+DIRS = ["brief", "findings", "verification", "decisions", "gate", "report", "implementation",
+        "runs", "evidence", "codebase-atlas/discrepancies"]  # others (debates, rereview, ...) are created when first used
 ROOT = os.getcwd()
 R = os.path.join(ROOT, ".review")
 P = os.path.join(R, "state.json")
@@ -49,6 +50,13 @@ def save(s):
     s["updated_at"] = now()
     json.dump(s, open(P, "w", encoding="utf-8"), indent=2)
 
+def cleanup_review_workspace():
+    """Delete bulky, regenerable scratch at the end of the review (never findings, decisions, tickets or cited evidence)."""
+    import glob, shutil
+    for pat in ("runs/env", "runs/venv*", "runs/tmp", "evidence/screenshots/page-*.yml", "evidence/screenshots/console-*.log"):
+        for p in glob.glob(os.path.join(R, pat)):
+            shutil.rmtree(p, ignore_errors=True) if os.path.isdir(p) else os.remove(p)
+
 cmd = sys.argv[1] if len(sys.argv) > 1 else "status"
 if cmd == "init":
     if os.path.exists(P):
@@ -56,7 +64,7 @@ if cmd == "init":
     for d in DIRS:
         os.makedirs(os.path.join(R, d), exist_ok=True)
     s = {"status": "active", "cycle": 1, "phase": "P0", "base_commit": git("rev-parse", "HEAD"),
-         "started_at": now(), "active_roles": REQUIRED_ROLES.copy(), "dev_server_url": None, "debate": False, "benchmark": False,
+         "started_at": now(), "active_roles": REQUIRED_ROLES.copy(), "dev_server_url": None, "debate": False, "benchmark": False, "depth": "full",
          "phases": {p: {"status": "pending"} for p in PHASES}, "dispatches": [], "dispatch_skips": []}
     s["phases"]["P0"] = {"status": "in_progress", "started_at": now()}
     save(s)
@@ -93,6 +101,7 @@ elif cmd == "advance":
                     sys.exit(f"Cannot advance {ph}: {g} failed. {(r.stdout or r.stderr).strip()[:1500]} -- Fix the records, or use --force (logged) only with a recorded reason.")
     s["phases"][ph]["status"] = "complete"; s["phases"][ph]["completed_at"] = now()
     if ph == "P6":
+        cleanup_review_workspace()
         s["status"] = "complete"; s["completed_at"] = now()
         print("P6 complete. REVIEW COMPLETE. Guards are now OFF. Report and implementation pack are final.")
     elif ph == "P7":
@@ -176,6 +185,18 @@ elif cmd == "debate":
     s["debate"] = True; s["phase"] = "P4"; s["phases"]["P4"] = {"status": "in_progress", "started_at": now()}
     if s["phases"]["P5"].get("status") in ("ready", "in_progress"): s["phases"]["P5"] = {"status": "pending"}
     save(s); print("Debate enabled. P4 in progress; run it, then `advance` continues to P5.")
+elif cmd == "depth":
+    s = load()
+    if len(sys.argv) > 2:
+        if sys.argv[2] not in ("lite", "full"): sys.exit("depth must be lite or full")
+        s["depth"] = sys.argv[2]
+    else:
+        try:
+            files = json.load(open(os.path.join(R, "brief", "stack-profile.json"), encoding="utf-8"))["size"]["files"]
+        except Exception:
+            files = None
+        s["depth"] = "lite" if isinstance(files, int) and files <= 50 else "full"
+    save(s); print(f"Review depth: {s['depth']}")
 elif cmd == "benchmark":
     s = load(); s["benchmark"] = True; save(s); print("Competitive benchmark enabled for P1 (CMP).")
 elif cmd in ("pause", "resume"):
@@ -185,6 +206,7 @@ elif cmd in ("pause", "resume"):
     s["status"] = "paused" if cmd == "pause" else "active"; save(s); print(f"Review {s['status']}. Guards {'OFF' if cmd == 'pause' else 'ON'}.")
 elif cmd == "rereview":
     s = load(); s["cycle"] += 1; s["status"] = "active"; s["phase"] = "P7"
+    os.makedirs(os.path.join(R, "rereview"), exist_ok=True)
     s["phases"]["P7"] = {"status": "in_progress", "started_at": now(), "head_commit": git("rev-parse", "HEAD")}
     save(s); print(f"P7 re-review opened (cycle {s['cycle']}). Base commit {s['base_commit'][:10]} -> HEAD {s['phases']['P7']['head_commit'][:10]}")
 elif cmd == "set":

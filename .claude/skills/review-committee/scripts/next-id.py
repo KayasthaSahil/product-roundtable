@@ -8,7 +8,9 @@ prefix = sys.argv[1]; count = int(sys.argv[2]) if len(sys.argv) > 2 else 1
 width = 2 if prefix == "WS" else 3
 pat = re.compile(re.escape(prefix) + r"-(\d+)")
 mx = 0
-for p in glob.glob(".review/**/*", recursive=True):
+# Only record folders: never walk runs/ (can hold a large environment), evidence/ or the Atlas.
+files = [p for d in ("findings", "decisions", "debates", "implementation", "verification", "gate", "rereview") for p in glob.glob(f".review/{d}/**/*", recursive=True)]
+for p in files:
     if os.path.isfile(p):
         try:
             for m in pat.finditer(open(p, encoding="utf-8", errors="ignore").read()):

@@ -75,6 +75,10 @@ For every Accepted / Accepted-with-modifications decision, record whether implem
 ## Validate before returning
 `python3 .claude/skills/review-standards/scripts/validate.py <kind> <file>` — kinds: `findings`, `verification`, `position`, `dispute`, `decisions`, `roadmap`, `gate`, `rereview`, `product-context`, `ticket`. Specialists validate only the record types they own; they do not create or edit implementation tickets. The Chair validates canonical planning tickets in P5/P6 with `.claude/skills/implementation-pack/scripts/ticket-check.py`, including the recorded nine-point quality review. Fix every validation error before the relevant phase gate.
 
+## Output hygiene
+- Write findings and other JSON directly with the Write tool. Do not leave generator scripts behind: any temporary script goes in `.review/runs/tmp/` (deleted when the review completes). Do not keep large test inputs in `.review/evidence/`: cite size and a short excerpt.
+- Evidence files you cite must stay: screenshots and small logs go in `.review/evidence/<ROLE>/`.
+
 ## Must not
 - Modify anything outside `.review/`, or change dependencies, git state or data.
 - Run the full test suite; targeted single tests only when essential, ≤5 min, within the committee budget.
